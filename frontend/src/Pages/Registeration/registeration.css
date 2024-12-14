@@ -1,0 +1,15 @@
+.form {
+  max-width: 40%; /* Optional: you can set a max-width to avoid the form becoming too wide */
+}
+/* App.css */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.form-container {
+  width: 100%;
+  height: 100%;
+}
+
+
