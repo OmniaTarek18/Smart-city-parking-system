@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography } from "@mui/material";
+import { TextField, Button, Typography} from "@mui/material";
 import "./registeration.css";
+
 function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,16 +15,39 @@ function SignUp() {
     password: "",
     confirmPassword: "",
   });
-
+  
+  const [errors, setErrors] = useState({});
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validate = () => {
+    const newErrors = {};
+    
+    // Phone number validation (example: US phone format)
+    const phonePattern = /^[0-9]{11}$/;
+    if (formData.phoneNumber && !phonePattern.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Phone number must be 11 digits";
+    }
+
+    // Password confirmation
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // returns true if no errors
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    navigate("/payment-details");
+    
+    if (validate()) {
+      console.log(formData);
+      navigate("/payment-details");
+    }
   };
 
   return (
@@ -42,6 +66,8 @@ function SignUp() {
             value={formData.firstName}
             onChange={handleChange}
             required
+            error={Boolean(errors.firstName)}
+            helperText={errors.firstName}
           />
           <TextField
             fullWidth
@@ -52,6 +78,8 @@ function SignUp() {
             value={formData.lastName}
             onChange={handleChange}
             required
+            error={Boolean(errors.lastName)}
+            helperText={errors.lastName}
           />
         </div>
         <TextField
@@ -62,6 +90,8 @@ function SignUp() {
           value={formData.phoneNumber}
           onChange={handleChange}
           required
+          error={Boolean(errors.phoneNumber)}
+          helperText={errors.phoneNumber}
         />
         <TextField
           fullWidth
@@ -72,6 +102,8 @@ function SignUp() {
           value={formData.licensePlateNumber}
           onChange={handleChange}
           required
+          error={Boolean(errors.licensePlateNumber)}
+          helperText={errors.licensePlateNumber}
         />
         <TextField
           fullWidth
@@ -92,6 +124,8 @@ function SignUp() {
           value={formData.password}
           onChange={handleChange}
           required
+          error={Boolean(errors.password)}
+          helperText={errors.password}
         />
         <TextField
           fullWidth
@@ -102,6 +136,8 @@ function SignUp() {
           value={formData.confirmPassword}
           onChange={handleChange}
           required
+          error={Boolean(errors.confirmPassword)}
+          helperText={errors.confirmPassword}
         />
         <Button
           className="button p-3 mt-4"

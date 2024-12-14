@@ -22,7 +22,7 @@ function CreditCard() {
   return (
     <div className="container p-5">
       <Typography variant="h4" gutterBottom>
-        Credit Card
+        Payment Method
       </Typography>
       <form onSubmit={handleSubmit}>
         <div className="d-flex">

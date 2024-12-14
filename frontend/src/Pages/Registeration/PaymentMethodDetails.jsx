@@ -1,4 +1,3 @@
-import "./RegisterationPage";
 import CreditCard from "../../Components/Registeration/CreditCard";
 function PaymentMethodDetails() {
   return (

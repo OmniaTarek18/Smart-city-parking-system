@@ -13,7 +13,7 @@ function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    userType: "",
+    userType: "driver",
   });
 
   const handleChange = (e) => {
