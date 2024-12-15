@@ -8,11 +8,15 @@
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
     "@mui/styled-engine-sc": "^6.2.0",
+    "axios": "^1.7.9",
     "cra-template": "1.2.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "frontend": "file:",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native-google-places-autocomplete": "^2.5.7",
     "react-router-dom": "^7.0.2",
     "react-scripts": "5.0.1",
+    "react-select": "^5.9.0",
     "styled-components": "^6.1.13",
     "web-vitals": "^4.2.4"
   },
@@ -39,5 +43,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.26.3"
   }
 }
