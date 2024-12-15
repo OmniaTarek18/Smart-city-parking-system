@@ -71,7 +71,7 @@ function Login() {
           />
         </RadioGroup>
         <Button
-          className="button mt-4"
+          className="button mt-4 p-3"
           fullWidth
           type="submit"
           variant="contained"
