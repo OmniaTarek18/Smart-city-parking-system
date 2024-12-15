@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
 
 const options = [
   { value: "new york", label: "New York" },
@@ -13,6 +14,7 @@ const options = [
 ];
 
 const LocationSearch = () => {
+  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(null);
   // const [options, setOptions] = useState([]);
 
@@ -22,7 +24,15 @@ const LocationSearch = () => {
   };
   const customDropdownIndicator = () => {
     return (
-      <SearchIcon style={{ fontSize: "24px", color: "gray", margin: 15 }} />
+      <SearchIcon
+        style={{
+          fontSize: "24px",
+          color: "gray",
+          margin: 15,
+          cursor: "pointer",
+        }}
+        onClick={() => navigate("/user-home-page/display-lots")}
+      />
     );
   };
 

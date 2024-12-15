@@ -9,6 +9,7 @@
     "@mui/material": "^6.2.0",
     "@mui/styled-engine-sc": "^6.2.0",
     "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
     "frontend": "file:",
     "react": "^18.2.0",

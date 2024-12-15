@@ -6,6 +6,7 @@ import HomePage from "./Pages/Driver/HomePage";
 import History from "./Pages/Driver/History";
 import Profile from "./Pages/Driver/Profile";
 import Search from "./Pages/Driver/Search";
+import DisplayLots from "./Pages/Driver/DisplayLots";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/user-home-page/history" element={<History />} />
         <Route path="/user-home-page/profile" element={<Profile />} />
         <Route path="/user-home-page/search" element={<Search />} />
+        <Route path="/user-home-page/display-lots" element={<DisplayLots />} />
       </Route>
     </Routes>
   );
