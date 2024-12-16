@@ -17,22 +17,9 @@ import lombok.RequiredArgsConstructor;
 public class LoginController {
     private final LoginService loginService;
 
-    @PostMapping("/driver")
+    @PostMapping("/login")
     public ResponseEntity<Integer> loginDriver(@RequestBody LoginRequest loginRequest) {
-        Integer id = loginService.login(loginRequest, "driver");
-        return ResponseEntity.ok(id);
-    }
-
-    @PostMapping("/system-admin")
-    public ResponseEntity<Integer> loginSystemAdmin(@RequestBody LoginRequest loginRequest) {
-        Integer id = loginService.login(loginRequest, "system_admin");
-        return ResponseEntity.ok(id);
-
-    }
-
-    @PostMapping("/parking-lot-admin")
-    public ResponseEntity<Integer> loginParkingLotAdmin(@RequestBody LoginRequest loginRequest) {
-        Integer id = loginService.login(loginRequest, "parking_lot_admin");
+        Integer id = loginService.login(loginRequest);
         return ResponseEntity.ok(id);
     }
 }

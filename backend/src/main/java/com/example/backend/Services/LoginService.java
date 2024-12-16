@@ -13,7 +13,10 @@ public class LoginService {
 
     private final UserRepository userRepository;
 
-    public Integer login(LoginRequest loginRequest, String type) {
-        return userRepository.findUserByEmailAndPassword(loginRequest.email(), loginRequest.password(), type);
+    public Integer login(LoginRequest loginRequest) {
+        return userRepository.findUserByEmailAndPassword(
+                loginRequest.email(),
+                loginRequest.password(),
+                loginRequest.type());
     }
 }

@@ -1,5 +1,5 @@
 package com.example.backend.DTOs;
 
-public record LoginRequest(String email, String password) {
+public record LoginRequest(String email, String password, String type) {
 
 }
