@@ -30,7 +30,7 @@ public class UserRepository {
                 return id;
             }, email);
         } catch (EmptyResultDataAccessException e) {
-            throw new IllegalArgumentException("No user found with the given email");
+            throw new IllegalArgumentException("Email is not found");
         }
     }
 }

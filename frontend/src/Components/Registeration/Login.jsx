@@ -10,10 +10,12 @@ import {
 import "./registeration.css";
 
 function Login() {
+  const [error, setError] = useState();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    userType: "driver",
+    type: "driver",
   });
 
   const handleChange = (e) => {
@@ -21,9 +23,32 @@ function Login() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
-    console.log(formData);
+
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Logged in successfully:", data);
+        setError(null);
+      }
+      else {
+        return response.text().then((message) => {
+          setError(message);
+          console.log(message);
+        });
+      }
+    } catch (err) {
+      console.log("Login error:", err.message);
+    }
   };
 
   return (
@@ -54,22 +79,27 @@ function Login() {
         />
         <RadioGroup
           row
-          name="userType"
-          value={formData.userType}
+          name="type"
+          value={formData.type}
           onChange={handleChange}
         >
           <FormControlLabel value="driver" control={<Radio />} label="Driver" />
           <FormControlLabel
-            value="parkingAdmin"
+            value="parking_lot_admin"
             control={<Radio />}
             label="Parking Lot Admin"
           />
           <FormControlLabel
-            value="systemAdmin"
+            value="system_admin"
             control={<Radio />}
             label="System Admin"
           />
         </RadioGroup>
+        {error && ( 
+          <div style={{color:"red"}}>
+            <strong>Error:</strong> {error}
+          </div>
+        )}
         <Button
           className="button mt-4 p-3"
           fullWidth
