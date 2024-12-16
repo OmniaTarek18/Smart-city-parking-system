@@ -49,7 +49,6 @@ function Header() {
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
-              cursor: "pointer"
             }}
           >
             JustPark
@@ -62,7 +61,7 @@ function Header() {
                 key={page}
                 sx={{ my: 2, color: "white" }}
                 onClick={() =>
-                  navigate(`/lot-manager-home-page/${page.toLowerCase()}`)
+                  navigate(`/lot-admin-home-page/${page.toLowerCase()}`)
                 }
               >
                 {page}
