@@ -2,8 +2,11 @@ import React from "react";
 import { Container, Card } from "@mui/material";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import { useUser } from '../../Context/UserContext';
 
 const Profile = () => {
+  const { userId } = useUser();
+
   const driverData = {
     name: "John Doe",
     email: "john.doe@example.com",
@@ -70,7 +73,7 @@ const Profile = () => {
 
           {/* Edit Button */}
           {/* <div className="text-center mt-4">
-            <button className="btn btn-primary">Edit Profile</button>
+            <button className="btn btn-primary">{userId}</button>
           </div> */}
         </div>
       </Card>

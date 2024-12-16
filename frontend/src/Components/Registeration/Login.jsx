@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../Context/UserContext";
 import {
   TextField,
   Button,
@@ -10,8 +12,9 @@ import {
 import "./registeration.css";
 
 function Login() {
+  const { setUserId } = useUser(); 
+  const navigate = useNavigate();
   const [error, setError] = useState();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -38,6 +41,8 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         console.log("Logged in successfully:", data);
+        setUserId(data);
+        navigate("/user-home-page/search");
         setError(null);
       }
       else {
