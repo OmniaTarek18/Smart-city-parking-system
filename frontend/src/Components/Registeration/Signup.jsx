@@ -36,6 +36,10 @@ function SignUp() {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
+    const licensePlateRegex = /^[A-Z0-9-]{2,7}$/;
+    if(formData.licensePlateNumber && !licensePlateRegex.test(formData.licensePlateNumber)){
+      newErrors.licensePlateNumber = "Invalid license plate number";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // returns true if no errors
