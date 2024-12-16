@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import axios from "axios";
+import { RadioGroup, FormControlLabel, Radio, colors } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 
@@ -16,11 +17,16 @@ const options = [
 const LocationSearch = () => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedType, setSelectedType] = useState("regular");
   // const [options, setOptions] = useState([]);
 
   const handleChange = (selected) => {
     setSelectedOption(selected);
     console.log(selected);
+  };
+  const handleSpotTypeChange = (event) => {
+    setSelectedType(event.target.value);
+    console.log("Selected spot type:", event.target.value);
   };
   const customDropdownIndicator = () => {
     return (
@@ -37,16 +43,47 @@ const LocationSearch = () => {
   };
 
   return (
-    <Select
-      value={selectedOption}
-      onChange={handleChange}
-      options={options}
-      placeholder="Search location"
-      className="select-dropdown"
-      components={{
-        DropdownIndicator: customDropdownIndicator, // Replace dropdown icon with search icon
-      }}
-    />
+    <div>
+      <Select
+        value={selectedOption}
+        onChange={handleChange}
+        options={options}
+        placeholder="Search location"
+        className="select-dropdown"
+        components={{
+          DropdownIndicator: customDropdownIndicator, // Replace dropdown icon with search icon
+        }}
+      />
+      <RadioGroup
+        row
+        name="spot Type"
+        value={selectedType}
+        onChange={handleSpotTypeChange}
+        sx={{
+          display: "flex",         
+          justifyContent: "space-evenly", 
+          alignItems: "center",    
+        }}      >
+        <FormControlLabel
+          value="regular"
+          control={<Radio />}
+          label="Regular"
+          sx={{ color: "white" }}
+        />
+        <FormControlLabel
+          value="disabled"
+          control={<Radio />}
+          label="Disabled"
+          sx={{ color: "white" }}
+        />
+        <FormControlLabel
+          value="EVcharging"
+          control={<Radio />}
+          label="EV Charging"
+          sx={{ color: "white" }}
+        />
+      </RadioGroup>
+    </div>
   );
 };
 
