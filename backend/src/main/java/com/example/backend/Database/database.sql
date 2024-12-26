@@ -18,10 +18,11 @@ USE `smartParking` ;
 -- Table `smartParking`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`User` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
+  `password` VARCHAR(60) NULL,
   `role` ENUM('SystemAdmin', 'LotManager', 'Driver') NULL,
+  `status` ENUM('ACTIVE', 'DELETED', 'BLOCKED') NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -31,7 +32,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`LotManager`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`LotManager` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `User_id` INT NOT NULL,
   `name` VARCHAR(45) NULL,
   `phone_number` VARCHAR(45) NULL,
@@ -49,7 +50,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`Driver`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`Driver` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `User_id` INT NOT NULL,
   `name` VARCHAR(45) NULL,
   `phone_number` VARCHAR(45) NULL,
@@ -72,7 +73,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`ParkingLot`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`ParkingLot` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `location` VARCHAR(45) NULL,
   `capacity` INT ZEROFILL NULL,
@@ -91,7 +92,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`ParkingSpot`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`ParkingSpot` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `ParkingLot_id` INT NOT NULL,
   `type` ENUM('REGULAR', 'HANDICAP', 'EV') NULL,
   `status` ENUM('AVAILABLE', 'RESERVED', 'OCCUPIED') NULL,
@@ -109,13 +110,13 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`Reservation`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`Reservation` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `Driver_id` INT NOT NULL,
   `ParkingSpot_id` INT NOT NULL,
   `ParkingLot_id` INT NOT NULL,
   `duration` TIME NULL,
   `start_time` DATETIME NULL,
-  `status` ENUM('PENDING', 'COMPLETED', 'CANCELLED', 'ACTIVE', 'EXPIRED') NULL,
+  `status` ENUM('PENDING', 'COMPLETED', 'CANCELLED', 'ACTIVE', 'EXPIRED', 'INVALID') NULL,
   `price` DOUBLE NULL,
   PRIMARY KEY (`id`, `Driver_id`, `ParkingSpot_id`, `ParkingLot_id`),
   INDEX `fk_Reservation_ParkingSpot1_idx` (`ParkingSpot_id` ASC, `ParkingLot_id` ASC) VISIBLE,
@@ -188,7 +189,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`FaultySpots`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`FaultySpots` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `ParkingSpot_id` INT NOT NULL,
   `ParkingLot_id` INT NOT NULL,
   `Driver_id` INT NOT NULL,
@@ -213,7 +214,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`Violation`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`Violation` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `Driver_id` INT NOT NULL,
   `penality_type` ENUM('OVERSTAY', 'CANCELATION', 'NOSHOWUP') NOT NULL,
   `LotManager_id` INT NOT NULL,
@@ -238,7 +239,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`Report`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`Report` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `ParkingLot_id` INT NOT NULL,
   `total_revenue` DOUBLE NULL,
   `penality_income` DOUBLE NULL,
