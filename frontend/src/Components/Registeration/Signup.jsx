@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography} from "@mui/material";
+import { TextField, Button, Typography } from "@mui/material";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/material.css";
+import axios from "axios"; // Use axios for API requests
 import "./registeration.css";
 
 function SignUp() {
@@ -10,34 +13,73 @@ function SignUp() {
     lastName: "",
     email: "",
     phoneNumber: "",
-    paymentMethod: "",
     licensePlateNumber: "",
     password: "",
     confirmPassword: "",
   });
-  
+
   const [errors, setErrors] = useState({});
-  
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const validate = () => {
+  const handlePhoneChange = (value) => {
+    setFormData((prev) => ({ ...prev, phoneNumber: value }));
+  };
+
+  const validateEmail = async (email) => {
+    try {
+      const key = "ff29d55610e84c9493625ad5cd09f5b4";
+      const response = await axios.get(
+        `https://emailvalidation.abstractapi.com/v1/?api_key=${key}&email=${email}`
+      );
+      console.log(response.data); // Add this line to check the response
+      return response.data.is_smtp_valid.value; // Corrected the typo
+    } catch (error) {
+      console.error("Email validation error:", error);
+      return false; // Assume invalid on error
+    }
+  };
+
+  const validate = async () => {
     const newErrors = {};
-    
-    // Phone number validation (example: US phone format)
-    const phonePattern = /^[0-9]{11}$/;
-    if (formData.phoneNumber && !phonePattern.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Phone number must be 11 digits";
+
+    // Name validation
+    const nameRegex = /^[a-zA-Z]{3,}$/;
+    if (formData.firstName && !nameRegex.test(formData.firstName)) {
+      newErrors.firstName = "Enter a valid name with at least 3 characters";
+    }
+    if (formData.lastName && !nameRegex.test(formData.lastName)) {
+      newErrors.lastName = "Enter a valid name with at least 3 characters";
     }
 
-    // Password confirmation
+    // Email validation
+    if (formData.email) {
+      setLoading(true); // Show loading spinner
+      const isEmailValid = await validateEmail(formData.email);
+      setLoading(false); // Hide loading spinner
+      if (!isEmailValid) {
+        newErrors.email = "Invalid email address";
+      }
+    }
+
+    // Password validation
+    if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters long";
+    }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    const licensePlateRegex = /^[A-Z0-9-]{2,7}$/;
-    if(formData.licensePlateNumber && !licensePlateRegex.test(formData.licensePlateNumber)){
+
+    // License plate validation 3 letters followed by 3 numbers
+    const licensePlateRegex = /^[A-Za-z]{3}[0-9]{3}$/;
+    if (
+      formData.licensePlateNumber &&
+      !licensePlateRegex.test(formData.licensePlateNumber)
+    ) {
       newErrors.licensePlateNumber = "Invalid license plate number";
     }
 
@@ -45,10 +87,11 @@ function SignUp() {
     return Object.keys(newErrors).length === 0; // returns true if no errors
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (validate()) {
+    const isValid = await validate();
+
+    if (isValid) {
       console.log(formData);
       navigate("/payment-details");
     }
@@ -86,16 +129,18 @@ function SignUp() {
             helperText={errors.lastName}
           />
         </div>
-        <TextField
-          fullWidth
-          label="Phone Number"
-          name="phoneNumber"
-          margin="normal"
+        <PhoneInput
+          country={"us"}
           value={formData.phoneNumber}
-          onChange={handleChange}
+          onChange={handlePhoneChange}
+          inputStyle={{
+            width: "100%",
+            height: "56px",
+            fontSize: "16px",
+            borderRadius: "4px",
+            borderColor: errors.phoneNumber ? "red" : "#c4c4c4",
+          }}
           required
-          error={Boolean(errors.phoneNumber)}
-          helperText={errors.phoneNumber}
         />
         <TextField
           fullWidth
@@ -118,6 +163,8 @@ function SignUp() {
           value={formData.email}
           onChange={handleChange}
           required
+          error={Boolean(errors.email)}
+          helperText={loading ? "Validating..." : errors.email}
         />
         <TextField
           fullWidth
