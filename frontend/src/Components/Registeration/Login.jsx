@@ -12,13 +12,13 @@ import {
 import "./registeration.css";
 
 function Login() {
-  const { setUserId } = useUser(); 
+  const { setUserId } = useUser();
   const navigate = useNavigate();
   const [error, setError] = useState();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    type: "driver",
+    role: "Driver",
   });
 
   const handleChange = (e) => {
@@ -27,9 +27,7 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
     try {
       const response = await fetch("http://localhost:8080/login", {
         method: "POST",
@@ -42,10 +40,13 @@ function Login() {
         const data = await response.json();
         console.log("Logged in successfully:", data);
         setUserId(data);
-        navigate("/user-home-page/search");
+        if (formData.role === "Driver")
+           navigate("/user-home-page/search");
+        else if (formData.role === "LotManager")
+          navigate("/lot-admin-home-page/my lot");
+        else navigate("/system-admin-home-page/insights");
         setError(null);
-      }
-      else {
+      } else {
         return response.text().then((message) => {
           setError(message);
           console.log(message);
@@ -84,24 +85,24 @@ function Login() {
         />
         <RadioGroup
           row
-          name="type"
-          value={formData.type}
+          name="role"
+          value={formData.role}
           onChange={handleChange}
         >
-          <FormControlLabel value="driver" control={<Radio />} label="Driver" />
+          <FormControlLabel value="Driver" control={<Radio />} label="Driver" />
           <FormControlLabel
-            value="parking_lot_admin"
+            value="LotManager"
             control={<Radio />}
             label="Parking Lot Admin"
           />
           <FormControlLabel
-            value="system_admin"
+            value="SystemAdmin"
             control={<Radio />}
             label="System Admin"
           />
         </RadioGroup>
-        {error && ( 
-          <div style={{color:"red"}}>
+        {error && (
+          <div style={{ color: "red" }}>
             <strong>Error:</strong> {error}
           </div>
         )}
