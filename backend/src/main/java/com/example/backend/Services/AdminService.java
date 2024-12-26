@@ -1,10 +1,5 @@
 package com.example.backend.Services;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,82 +14,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminService {
 
-    private final DataSource dataSource;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void addAdmin(AdminDTO adminDTO) {
-        Connection connection = null;
-
-        Integer userId = userRepository.findUserByEmail(adminDTO.email());
-        if (userId != null) {
+        int rowsAffected = userRepository.insertUserIfNotExists(adminDTO.email(),
+                passwordEncoder.encode(adminDTO.password()), Role.SystemAdmin, UserStatus.ACTIVE);
+        if (rowsAffected == 0) {
             throw new IllegalArgumentException("Email already exists");
-        }
-        try {
-            connection = dataSource.getConnection();
-            connection.setAutoCommit(false);
-
-            userRepository.insertUser(connection, adminDTO.email(),
-                    passwordEncoder.encode(adminDTO.password()), Role.SystemAdmin, UserStatus.ACTIVE);
-
-            connection.commit();
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback(); // Roll back the transaction in case of error
-                } catch (SQLException rollbackEx) {
-                    rollbackEx.printStackTrace();
-                }
-            }
-            throw new RuntimeException("Error adding lot manager: " + e.getMessage(), e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException closeEx) {
-                    closeEx.printStackTrace();
-                }
-            }
         }
     }
 
     public void deleteAdmin(Integer id) {
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            connection.setAutoCommit(false);
-
-            Integer userId = userRepository.findUserById(id);
-            if (userId == null) {
-                throw new IllegalArgumentException("Email does not exist");
-            }
-
-            int numOfAdmins = userRepository.countActiveUsers(Role.SystemAdmin);
-            if (numOfAdmins == 1) {
-                throw new IllegalArgumentException("Cannot delete the last admin");
-            } else {
-                userRepository.deleteUser(id);
-            }
-
-            connection.commit();
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback(); // Roll back the transaction in case of error
-                } catch (SQLException rollbackEx) {
-                    rollbackEx.printStackTrace();
-                }
-            }
-            throw new RuntimeException("Error deleting admin: " + e.getMessage(), e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException closeEx) {
-                    closeEx.printStackTrace();
-                }
-            }
+        int rowsAffected = userRepository.deleteAdminIfMoreThanOne(id);
+        if (rowsAffected == 0) {
+            throw new IllegalArgumentException("Unable to delete admin: ensure its existence and the presence of other admins.");
         }
     }
 }

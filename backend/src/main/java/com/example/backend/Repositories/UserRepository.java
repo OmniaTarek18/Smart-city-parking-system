@@ -51,15 +51,6 @@ public class UserRepository {
         }
     }
 
-    public Integer findUserById(Integer userId) {
-        try {
-            String query = "SELECT id FROM user WHERE id = ?";
-            return jdbc.queryForObject(query, Integer.class, userId);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
     public Integer insertUser(Connection connection, String email, String password, Role role, UserStatus status)
             throws SQLException {
 
@@ -87,18 +78,21 @@ public class UserRepository {
         }
     }
 
-    public int countActiveUsers(Role role) {
-        String query = "SELECT COUNT(*) FROM user WHERE role = ? AND status = 'ACTIVE'";
-        return jdbc.queryForObject(query, Integer.class, role.toString());
+    public int insertUserIfNotExists(String email, String password, Role role, UserStatus status) {
+        String insertSQL = "INSERT INTO user (email, password, role, status)" + " SELECT ?, ?, ?, ?"
+                + " WHERE NOT EXISTS (SELECT 1 FROM user WHERE email = ?)";
+        return jdbc.update(insertSQL, email, password, role.toString(), status.toString(), email);
     }
 
-    public void updateStatus(Integer userId, UserStatus status) {
-        String query = "UPDATE user SET status = ? WHERE id = ?";
-        jdbc.update(query, status.toString(), userId);
+    public int updateStatusIfExists(String email, Role role, UserStatus status) {
+        String query = "UPDATE user SET status = ? WHERE email = ? AND role = ?";
+        return jdbc.update(query, status.toString(), email, role.toString());
     }
 
-    public void deleteUser(Integer userId) {
-        String query = "DELETE FROM user WHERE id = ?";
-        jdbc.update(query, userId);
+    public int deleteAdminIfMoreThanOne(Integer userId) {
+        String query = "DELETE u FROM user u "
+                + "JOIN (SELECT 1 AS to_delete FROM user WHERE role = 'SystemAdmin' HAVING COUNT(*) > 1) AS admins "
+                + "WHERE u.id = ? AND u.role = 'SystemAdmin'";
+        return jdbc.update(query, userId);
     }
 }
