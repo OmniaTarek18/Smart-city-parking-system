@@ -13,6 +13,7 @@
     "cra-template": "1.2.0",
     "frontend": "file:",
     "libphonenumber-js": "^1.11.17",
+    "lucide-react": "^0.469.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-native-google-places-autocomplete": "^2.5.7",
