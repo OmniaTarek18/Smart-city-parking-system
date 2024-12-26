@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `smartParking`.`User` (
   `email` VARCHAR(45) NULL,
   `password` VARCHAR(60) NULL,
   `role` ENUM('SystemAdmin', 'LotManager', 'Driver') NULL,
-  `status` ENUM('ACTIVE', 'DELETED', 'BLOCKED') NULL,
+  `status` ENUM('ACTIVE', 'BLOCKED') NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -75,7 +75,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `smartParking`.`ParkingLot` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
-  `location` VARCHAR(45) NULL,
+  `location` POINT NULL,
   `capacity` INT ZEROFILL NULL,
   `owner_id` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `smartParking`.`Reservation` (
   `ParkingLot_id` INT NOT NULL,
   `duration` TIME NULL,
   `start_time` DATETIME NULL,
-  `status` ENUM('PENDING', 'COMPLETED', 'CANCELLED', 'ACTIVE', 'EXPIRED', 'INVALID') NULL,
+  `status` ENUM('PENDING', 'COMPLETED', 'CANCELLED', 'ACTIVE', 'EXPIRED') NULL,
   `price` DOUBLE NULL,
   PRIMARY KEY (`id`, `Driver_id`, `ParkingSpot_id`, `ParkingLot_id`),
   INDEX `fk_Reservation_ParkingSpot1_idx` (`ParkingSpot_id` ASC, `ParkingLot_id` ASC) VISIBLE,

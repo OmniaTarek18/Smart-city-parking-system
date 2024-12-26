@@ -65,11 +65,16 @@ public class AdminService {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
 
+            Integer userId = userRepository.findUserById(id);
+            if (userId == null) {
+                throw new IllegalArgumentException("Email does not exist");
+            }
+
             int numOfAdmins = userRepository.countActiveUsers(Role.SystemAdmin);
             if (numOfAdmins == 1) {
                 throw new IllegalArgumentException("Cannot delete the last admin");
             } else {
-                userRepository.updateStatus(id, UserStatus.DELETED);
+                userRepository.deleteUser(id);
             }
 
             connection.commit();
