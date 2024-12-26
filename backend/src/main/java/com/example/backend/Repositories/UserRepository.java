@@ -51,6 +51,15 @@ public class UserRepository {
         }
     }
 
+    public Integer findUserById(Integer userId) {
+        try {
+            String query = "SELECT id FROM user WHERE id = ?";
+            return jdbc.queryForObject(query, Integer.class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     public Integer insertUser(Connection connection, String email, String password, Role role, UserStatus status)
             throws SQLException {
 
@@ -86,5 +95,10 @@ public class UserRepository {
     public void updateStatus(Integer userId, UserStatus status) {
         String query = "UPDATE user SET status = ? WHERE id = ?";
         jdbc.update(query, status.toString(), userId);
+    }
+
+    public void deleteUser(Integer userId) {
+        String query = "DELETE FROM user WHERE id = ?";
+        jdbc.update(query, userId);
     }
 }
