@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route ,Navigate} from "react-router-dom";
 import RegisterationPage from "./Pages/Registeration/RegisterationPage";
 import PaymentMethodDetails from "./Pages/Registeration/PaymentMethodDetails";
 import "./App.css";
@@ -19,7 +19,7 @@ function App() {
   return (
     <UserProvider>
       <Routes>
-        <Route path="/" element={<RegisterationPage />} />
+        {/* <Route path="/" element={<RegisterationPage />} />
         <Route path="/payment-details" element={<PaymentMethodDetails />} />
         
         <Route path="/user-home-page" element={<HomePage />}>
@@ -27,8 +27,8 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="search" element={<Search />} />
           <Route path="display-lots" element={<DisplayLots />} />
-        </Route>
-
+        </Route> */}
+        <Route path="/" element={<Navigate to="/lot-admin-home-page" />} />
         <Route path="/lot-admin-home-page" element={<LotAdminHomePage />}>
           <Route path="my lot" element={<MyLot />} />
         </Route>

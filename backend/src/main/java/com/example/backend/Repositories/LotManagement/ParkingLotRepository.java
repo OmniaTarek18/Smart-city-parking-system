@@ -67,13 +67,13 @@ public class ParkingLotRepository {
                 rows.getInt("id"),
                 rows.getString("name"),
                 new Point(
-                    rows.getDouble("latitude"),
-                    rows.getDouble("longitude")
-                ),
+                        rows.getDouble("latitude"),
+                        rows.getDouble("longitude")),
                 rows.getInt("capacity_regular"),
                 rows.getInt("capacity_handicap"),
                 rows.getInt("capacity_ev"),
-                rows.getInt("owner_id")
-        );
+                rows.getInt("owner_id"));
     }
+    
+    
 }

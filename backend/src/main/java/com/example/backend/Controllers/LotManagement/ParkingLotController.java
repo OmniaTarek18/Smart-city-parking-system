@@ -41,4 +41,5 @@ public class ParkingLotController {
     public void deleteParkingLot(@PathVariable int id) {
         parkingLotService.deleteParkingLot(id);
     }
+    
 }
