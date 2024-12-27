@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LocationRepository {
     private final JdbcTemplate jdbcTemplate;
-    // Should I add the transactional code here???????????????????????
     public Point findCoordinatesById(int lotId) {
         String sql = "SELECT ST_X(location) as latitude, ST_Y(location) as longitude FROM parkinglot WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[] { lotId }, this::mapPoint);
