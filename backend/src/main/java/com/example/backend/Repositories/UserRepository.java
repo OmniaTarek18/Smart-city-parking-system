@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -92,11 +93,27 @@ public class UserRepository {
         return jdbc.update(query, status.toString(), email, role.toString());
     }
 
-    public int deleteAdminIfMoreThanOne(Integer userId) {
+    public int deleteAdminIfMoreThanOne(String email) {
         String query = "DELETE u FROM user u "
                 + "JOIN (SELECT 1 AS to_delete FROM user WHERE role = 'SystemAdmin' HAVING COUNT(*) > 1) AS admins "
-                + "WHERE u.id = ? AND u.role = 'SystemAdmin'";
-        return jdbc.update(query, userId);
+                + "WHERE u.email = ? AND u.role = 'SystemAdmin'";
+        return jdbc.update(query, email);
+    }
+
+    public List<String> getAdmins(String email, int pageSize, int pageNum) {
+        StringBuilder query = new StringBuilder("SELECT email FROM user WHERE role = 'SystemAdmin' ");
+
+        List<Object> params = new ArrayList<>();
+
+        if (email != null && !email.isEmpty()) {
+            query.append(" AND LOWER(email) LIKE LOWER(?)");
+            params.add("%" + email + "%");
+        }
+        
+        query.append("LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((pageNum - 1) * pageSize);
+        return jdbc.queryForList(query.toString(), String.class, params.toArray());
     }
 
     public List<TopUserDTO> getTopDrivers(Integer pageSize, Integer pageNum) {
