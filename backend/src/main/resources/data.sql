@@ -14,7 +14,7 @@ INSERT IGNORE INTO `smartParking`.`Driver` (`id`, `User_id`, `name`, `phone_numb
 
 -- Insert data IGNORE INTO `ParkingLot` table
 INSERT IGNORE INTO `smartParking`.`ParkingLot` (`id`, `name`, `location`, `capacity`, `owner_id`) VALUES
-(1, 'Downtown Parking', ST_GeomFromText('POINT(40.712776 -74.005974)'), 100, 1);
+(1, 'Downtown Parking', ST_GeomFromText('POINT(31.24379936506694 29.969167949550044)'), 100, 1);
 
 -- Insert data IGNORE INTO `ParkingSpot` table
 INSERT IGNORE INTO `smartParking`.`ParkingSpot` (`id`, `ParkingLot_id`, `type`, `status`) VALUES

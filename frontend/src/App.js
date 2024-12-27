@@ -18,7 +18,7 @@ import GoogleMap from "./Components/GoogleMap";
 
 function App() {
   return (
-    <GoogleMap/>
+    <GoogleMap lotId={1}/>
     // <UserProvider>
     //   <Routes>
     //     <Route path="/" element={<RegisterationPage />} />

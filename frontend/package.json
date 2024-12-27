@@ -11,6 +11,7 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
+    "decode-google-map-polyline": "^1.0.1",
     "frontend": "file:",
     "leaflet": "^1.9.4",
     "libphonenumber-js": "^1.11.17",
