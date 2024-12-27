@@ -1,34 +1,28 @@
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import GarageIcon from "@mui/icons-material/Garage";
-import Badge from "@mui/material/Badge";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Box, Button, Tooltip, IconButton, Avatar, Menu, MenuItem, Container } from "@mui/material";
+import GarageIcon from '@mui/icons-material/Garage';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 
 
-const pages = ["Insights","Lot Managers", "Users"];
+const pages = ["View Insights","Manage Lot Managers", "Manage Drivers", "Manage Admins"];
 const settings = ["Logout"];
 // const notifications = ["penality here 5$"];
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElNo, setAnchorElNo] = useState(null);
   const [notifications, setNotifications] = useState(null);
+
   const handleOpenNoMenu= (event) => setAnchorElNo(event.currentTarget);
   const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
   const handleCloseNoMenu = () => setAnchorElNo(null);
   const handleCloseUserMenu = () => setAnchorElUser(null);
+
+  const getPagePath = (page) => `/system-admin-home-page/${page.toLowerCase().replace(" ", "-")}`;
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#333333'/*585858*/ }}>
@@ -59,10 +53,14 @@ function Header() {
             {pages.map((page) => (
               <Button
                 key={page}
-                sx={{ my: 2, color: "white" }}
-                onClick={() =>
-                  navigate(`/system-admin-home-page/${page.toLowerCase()}`)
-                }
+                sx={{ my: 2,
+                  backgroundColor: location.pathname === getPagePath(page) ? "#585858" : "#333333",
+                  color: "white",
+                  '&:hover': {
+                    backgroundColor: location.pathname === getPagePath(page) ? "#585858" : "#333333",
+                  },
+                }}
+                onClick={() => navigate(getPagePath(page))}
               >
                 {page}
               </Button>

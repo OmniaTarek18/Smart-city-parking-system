@@ -1,7 +1,6 @@
 package com.example.backend.Services.Registeration;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.DTOs.SignupRequest;
 import com.example.backend.Enums.Role;

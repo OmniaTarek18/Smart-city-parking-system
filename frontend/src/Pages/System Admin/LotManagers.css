@@ -1,0 +1,84 @@
+.lot-managers-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.search-bar input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    height: 40px;
+    width: 300px;
+    box-sizing: border-box;
+}
+
+.search-bar button {
+    padding: 8px 12px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.lot-managers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.lot-managers-table th,
+.lot-managers-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.lot-managers-table th {
+    background-color: #585858;
+    /* Optional: Add a background color */
+    color: white;
+    font-weight: bold;
+}
+
+.lot-managers-table tr:hover {
+    background-color: #f9f9f9;
+    /* Optional: Highlight on hover */
+}
+
+.lot-managers-table button {
+    padding: 8px 12px;
+    background-color: #585858;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.lot-managers-table button:hover {
+    background-color: #333333;
+}
+
+.popupButton {
+    padding: 8px 12px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    border-radius: 4px;
+    width: 25%;
+}
