@@ -42,8 +42,9 @@ const GoogleMap = ({ lotId }) => {
         avoid: "ferries|tolls|highways",
       },
       headers: {
-        "x-rapidapi-key": "cb20e416d3msha4c774e94db4ed3p138ebfjsn3b0d73722384",
-        "x-rapidapi-host": "google-map-places.p.rapidapi.com",
+        // uncomment the following lines to use the API
+        // "x-rapidapi-key": "cb20e416d3msha4c774e94db4ed3p138ebfjsn3b0d73722384",
+        // "x-rapidapi-host": "google-map-places.p.rapidapi.com",
       },
     };
 
