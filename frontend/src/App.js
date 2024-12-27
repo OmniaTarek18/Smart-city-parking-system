@@ -15,31 +15,34 @@ import LotManagers from "./Pages/System Admin/LotManagers";
 import Insights from "./Pages/System Admin/Insights";
 import { UserProvider } from "./Context/UserContext";
 import GoogleMap from "./Components/GoogleMap";
+import { DataProvider } from "./Context/DataContext";
 
 function App() {
   return (
     <UserProvider>
-      <Routes>
-        <Route path="/" element={<RegisterationPage />} />
-        <Route path="/payment-details" element={<PaymentMethodDetails />} />
-        
-        <Route path="/user-home-page" element={<HomePage />}>
-          <Route path="history" element={<History />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="search" element={<Search />} />
-          <Route path="display-lots" element={<DisplayLots />} />
-        </Route>
+      <DataProvider>
+        <Routes>
+          <Route path="/" element={<RegisterationPage />} />
+          <Route path="/payment-details" element={<PaymentMethodDetails />} />
 
-        <Route path="/lot-admin-home-page" element={<LotAdminHomePage />}>
-          <Route path="my lot" element={<MyLot />} />
-        </Route>
+          <Route path="/user-home-page" element={<HomePage />}>
+            <Route path="history" element={<History />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="search" element={<Search />} />
+            <Route path="display-lots" element={<DisplayLots />} />
+          </Route>
 
-        <Route path="/system-admin-home-page" element={<AdminHomePage />}>
-          <Route path="users" element={<Users />} />
-          <Route path="lot managers" element={<LotManagers />} />
-          <Route path="insights" element={<Insights />} />
-        </Route>
-      </Routes>
+          <Route path="/lot-admin-home-page" element={<LotAdminHomePage />}>
+            <Route path="my lot" element={<MyLot />} />
+          </Route>
+
+          <Route path="/system-admin-home-page" element={<AdminHomePage />}>
+            <Route path="users" element={<Users />} />
+            <Route path="lot managers" element={<LotManagers />} />
+            <Route path="insights" element={<Insights />} />
+          </Route>
+        </Routes>
+      </DataProvider>
     </UserProvider>
   );
 }

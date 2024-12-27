@@ -5,7 +5,6 @@ body {
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden; /* Prevent horizontal scrolling */
-  overflow-y: hidden; /* Prevent vertical scrolling */
 }
 
 *,

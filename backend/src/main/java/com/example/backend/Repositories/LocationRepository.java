@@ -20,6 +20,7 @@ public class LocationRepository {
     }
 
     private Point mapPoint(ResultSet rs, int rowNum) throws SQLException {
+        // use getDouble directly ....
         String latitude = rs.getString("latitude");
         String longitude = rs.getString("longitude");
         double x = Double.parseDouble(latitude);
