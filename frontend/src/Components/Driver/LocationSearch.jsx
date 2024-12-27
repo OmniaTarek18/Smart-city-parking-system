@@ -13,7 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import "./dataPicker.css";
 const options = [
   { value: "new york", label: "New York" },
   { value: "los angeles", label: "Los Angeles" },
@@ -92,29 +92,39 @@ const LocationSearch = () => {
         }}
       />
 
-      <div style={{ marginBottom: "20px" }}>
-        <Typography variant="subtitle1">From:</Typography>
-        {/* <DatePicker
-          selected={startTime}
-          onChange={handleStartTimeChange}
-          showTimeSelect
-          dateFormat="Pp"
-          minDate={new Date()}
+      <div className="time-row-container">
+        <div
           className="custom-datepicker"
-          style={{ width: "100%", padding: "10px" }}
-        /> */}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            marginBottom: "20px",
+            width: "240px",
+          }}
+        >
+          <DatePicker
+            selected={startTime}
+            onChange={handleStartTimeChange}
+            showTimeSelect
+            dateFormat="Pp"
+            minDate={new Date()}
+            customInput={
+              <TextField label="From" variant="outlined" fullWidth />
+            }
+          />
+        </div>
+        <TextField
+          label="Duration (HH:MM)"
+          type="time"
+          name="duration"
+          value={`${String(duration.hours).padStart(2, "0")}:${String(
+            duration.minutes
+          ).padStart(2, "0")}`}
+          onChange={handleDurationChange}
+          sx={{ width: "240px", marginBottom: "20px", zIndex: 0 }}
+        />
       </div>
-
-      <TextField
-        label="Duration (HH:MM)"
-        type="time"
-        name="duration"
-        value={`${String(duration.hours).padStart(2, "0")}:${String(
-          duration.minutes
-        ).padStart(2, "0")}`}
-        onChange={handleDurationChange}
-        sx={{ width: "200px", marginBottom: "20px" }}
-      />
 
       <RadioGroup
         row
