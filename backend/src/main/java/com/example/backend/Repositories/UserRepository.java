@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.DTOs.TopUserDTO;
+import com.example.backend.DTOs.WorstDriverDTO;
 import com.example.backend.Enums.Role;
 import com.example.backend.Enums.UserStatus;
 
@@ -119,6 +120,33 @@ public class UserRepository {
                 rs.getString("driver_name"),
                 rs.getInt("successful_reservations"),
                 rs.getInt("violations"),
+                rs.getInt("score")
+            );
+        }, pageSize, (pageNum-1) * pageSize);
+    }
+
+    public List<WorstDriverDTO> getWorstDrivers(int pageSize, int pageNum) {
+        String query = "SELECT u.email, d.name, d.phone_number, " + 
+                        "COALESCE(viol.total_violations, 0) AS total_violations, " + 
+                        "COALESCE(faulty_spots.faulty_spots_count, 0) AS faulty_spots_count, " + 
+                        "(COALESCE(viol.total_violations, 0) + COALESCE(faulty_spots.faulty_spots_count, 0)) AS score " + 
+                        "FROM Driver d JOIN User u ON d.User_id = u.id " + 
+                        "LEFT JOIN (SELECT Driver_id, COUNT(*) AS total_violations " + 
+                        "FROM Violation GROUP BY Driver_id) " + 
+                        "viol ON d.id = viol.Driver_id " + 
+                        "LEFT JOIN (SELECT Driver_id, COUNT(*) AS faulty_spots_count " + 
+                        "FROM FaultySpots GROUP BY Driver_id) " + 
+                        "faulty_spots ON d.id = faulty_spots.Driver_id " + 
+                        "ORDER BY score DESC " + 
+                        "LIMIT ? OFFSET ?;";
+        
+        return jdbc.query(query, (rs, rowNum) -> {
+            return new WorstDriverDTO(
+                rs.getString("email"),
+                rs.getString("name"),
+                rs.getString("phone_number"),
+                rs.getInt("total_violations"),
+                rs.getInt("faulty_spots_count"),
                 rs.getInt("score")
             );
         }, pageSize, (pageNum-1) * pageSize);
