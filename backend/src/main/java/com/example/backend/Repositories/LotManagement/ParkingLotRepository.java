@@ -19,16 +19,30 @@ public class ParkingLotRepository {
 
     public List<ParkingLotDTO> findByOwnerId(int ownerId) {
         String sql = "select id, name, st_x(location) as latitude, st_y(location) as longitude, " +
-                     "capacity_regular, capacity_handicap, capacity_ev, owner_id " +
-                     "from ParkingLot where owner_id = ?";
+                "capacity_regular, capacity_handicap, capacity_ev, owner_id " +
+                "from ParkingLot where owner_id = ?";
         return jdbcTemplate.query(sql, this::mapToParkingLot, ownerId);
     }
+    
+    public ParkingLotDTO findById(int id) {
+        String sql = "select id, name, st_x(location) as latitude, st_y(location) as longitude, " +
+                    "capacity_regular, capacity_handicap, capacity_ev, owner_id " +
+                    "from ParkingLot where id = ?";
+        List<ParkingLotDTO> results = jdbcTemplate.query(sql, this::mapToParkingLot, id);
+        return results.isEmpty() ? null : results.get(0);
+    }
 
-    public void save(ParkingLotDTO parkingLot) {
+    public int getNextId() {
+        String sql = "select coalesce(max(id), 0) + 1 from ParkingLot";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    public int save(ParkingLotDTO parkingLot) {
+        int id = parkingLot.id() == 0 ? getNextId() : parkingLot.id(); 
         String sql = "insert into ParkingLot (id, name, location, capacity_regular, capacity_handicap, capacity_ev, owner_id) " +
                      "values (?, ?, point(?,?), ?, ?, ?, ?)";
         jdbcTemplate.update(sql, 
-            parkingLot.id(), 
+            id, 
             parkingLot.name(), 
             parkingLot.location().latitude(), 
             parkingLot.location().longitude(),
@@ -36,6 +50,7 @@ public class ParkingLotRepository {
             parkingLot.capacity_handicap(), 
             parkingLot.capacity_ev(), 
             parkingLot.owner_id());
+        return id;
     }
 
     public void update(ParkingLotDTO parkingLot) {
@@ -77,3 +92,6 @@ public class ParkingLotRepository {
     
     
 }
+
+
+

@@ -1,44 +1,52 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  Typography, 
-  IconButton, 
-  Box, 
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  IconButton,
+  Box,
   Tooltip,
   Menu,
-  MenuItem
-} from '@mui/material';
-import { 
-  LocalParking, 
-  AccessibleForward, 
+  MenuItem,
+} from "@mui/material";
+import {
+  LocalParking,
+  AccessibleForward,
   EvStation,
   MoreVert,
   Edit,
-  Delete
-} from '@mui/icons-material';
-import { green, orange, red, grey } from '@mui/material/colors';
-import SpotEditDialog from './SpotEditDialog';
+  Delete,
+} from "@mui/icons-material";
+import { green, orange, red, grey } from "@mui/material/colors";
+import SpotEditDialog from "./SpotEditDialog";
 
-const SpotCard = ({ spot, onStatusChange, onEdit, onDelete }) => {
+const SpotCard = ({ spot, onStatusChange, onUpdate, onDelete }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'AVAILABLE': return green[500];
-      case 'RESERVED': return orange[500];
-      case 'OCCUPIED': return red[500];
-      default: return green[500];
+      case "AVAILABLE":
+        return green[500];
+      case "RESERVED":
+        return orange[500];
+      case "OCCUPIED":
+        return red[500];
+      default:
+        return grey[400];
     }
   };
 
   const getSpotIcon = (type) => {
     switch (type) {
-      case 'REGULAR': return <LocalParking />;
-      case 'HANDICAP': return <AccessibleForward />;
-      case 'EV': return <EvStation />;
-      default: return <LocalParking />;
+      case "REGULAR":
+        return <LocalParking />;
+      case "HANDICAP":
+        return <AccessibleForward />;
+      case "EV":
+        return <EvStation />;
+      default:
+        return <LocalParking />;
     }
   };
 
@@ -58,30 +66,31 @@ const SpotCard = ({ spot, onStatusChange, onEdit, onDelete }) => {
 
   const handleDeleteClick = () => {
     handleMenuClose();
-    onDelete(spot.id);
+    if (onDelete) onDelete(spot.id);
   };
 
   return (
     <>
-      <Card 
-        sx={{ 
+      <Card
+        sx={{
           width: 120,
           height: 120,
           m: 1,
-          position: 'relative',
-          cursor: 'pointer',
-          transition: 'transform 0.2s',
-          '&:hover': {
-            transform: 'scale(1.05)'
+          position: "relative",
+          cursor: "pointer",
+          transition: "transform 0.2s",
+          "&:hover": {
+            transform: "scale(1.05)",
           },
           border: 2,
-          borderColor: getStatusColor(spot.status)
+          borderColor: getStatusColor(spot.status),
         }}
       >
         <IconButton
           size="small"
-          sx={{ position: 'absolute', top: 4, right: 4 }}
+          sx={{ position: "absolute", top: 4, right: 4 }}
           onClick={handleMenuClick}
+          aria-label="Options"
         >
           <MoreVert />
         </IconButton>
@@ -94,19 +103,25 @@ const SpotCard = ({ spot, onStatusChange, onEdit, onDelete }) => {
           <MenuItem onClick={handleEditClick}>
             <Edit fontSize="small" sx={{ mr: 1 }} /> Edit
           </MenuItem>
+          {onDelete && (
+            <MenuItem onClick={handleDeleteClick}>
+              <Delete fontSize="small" sx={{ mr: 1 }} /> Delete
+            </MenuItem>
+          )}
         </Menu>
 
-        <CardContent sx={{ p: 2, textAlign: 'center' }}>
-          <Tooltip title={`Status: ${spot.status}`}>
+        <CardContent sx={{ p: 2, textAlign: "center" }}>
+          <Tooltip title={`Status: ${spot.status || "Unknown"}`}>
             <Box>
-              <IconButton 
-                sx={{ 
+              <IconButton
+                sx={{
                   backgroundColor: getStatusColor(spot.status),
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: getStatusColor(spot.status)
-                  }
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: getStatusColor(spot.status),
+                  },
                 }}
+                aria-label={spot.type || "Spot"}
               >
                 {getSpotIcon(spot.type)}
               </IconButton>
@@ -114,7 +129,7 @@ const SpotCard = ({ spot, onStatusChange, onEdit, onDelete }) => {
                 {spot.id}
               </Typography>
               <Typography variant="caption" color="textSecondary">
-                {spot.status}
+                {spot.status || "Unknown"}
               </Typography>
             </Box>
           </Tooltip>
@@ -125,7 +140,10 @@ const SpotCard = ({ spot, onStatusChange, onEdit, onDelete }) => {
         open={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         spot={spot}
-        onUpdate={onEdit}
+        onUpdate={(updatedSpotData) => {
+          setIsEditDialogOpen(false);
+          onUpdate(spot.id, updatedSpotData); 
+        }}
       />
     </>
   );

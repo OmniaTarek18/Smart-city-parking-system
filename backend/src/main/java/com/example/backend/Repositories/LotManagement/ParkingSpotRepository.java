@@ -80,4 +80,10 @@ public class ParkingSpotRepository {
                 SpotType.valueOf(rows.getString("type")),
                 SpotStatus.valueOf(rows.getString("status")));
     }
+
+    public int countOccupiedSpots(int parkingLotId, SpotType type) {
+        String sql = "select count(*) from ParkingSpot where ParkingLot_id = ? and type = ? and status = 'OCCUPIED'";
+        return jdbcTemplate.queryForObject(sql, Integer.class, parkingLotId, type.name());
+    }
+
 }

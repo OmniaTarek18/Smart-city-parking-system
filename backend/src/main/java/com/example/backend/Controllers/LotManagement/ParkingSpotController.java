@@ -3,6 +3,7 @@ package com.example.backend.Controllers.LotManagement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import com.example.backend.DTOs.ParkingSpotDTO;
 import com.example.backend.Services.LotManagement.ParkingSpotService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/parking-spots")
 public class ParkingSpotController {
     @Autowired

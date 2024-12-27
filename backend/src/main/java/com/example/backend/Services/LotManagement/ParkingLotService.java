@@ -25,17 +25,17 @@ public class ParkingLotService {
         return parkingLotRepository.findByOwnerId(ownerId);
     }
 
-    public void addParkingLot(ParkingLotDTO parkingLot) {
-        parkingLotRepository.save(parkingLot);
-        createSpots(parkingLot);
+    public int addParkingLot(ParkingLotDTO parkingLot) {
+        int id = parkingLotRepository.save(parkingLot);
+        createSpots(parkingLot, id);
+        return id;
     }
 
     public void updateParkingLot(ParkingLotDTO parkingLot) {
         parkingLotRepository.update(parkingLot);
-        // update spots for each type 
-        updateSpots(parkingLot,parkingLot.capacity_regular(),SpotType.REGULAR);
-        updateSpots(parkingLot,parkingLot.capacity_handicap(),SpotType.HANDICAP);
-        updateSpots(parkingLot,parkingLot.capacity_ev(),SpotType.EV);
+        updateSpots(parkingLot, parkingLot.capacity_regular(), SpotType.REGULAR);
+        updateSpots(parkingLot, parkingLot.capacity_handicap(), SpotType.HANDICAP);
+        updateSpots(parkingLot, parkingLot.capacity_ev(), SpotType.EV);
     }
 
     public void deleteParkingLot(int id) {
@@ -43,32 +43,51 @@ public class ParkingLotService {
         parkingLotRepository.delete(id);
     }
 
-    private void createSpots(ParkingLotDTO parkingLot) {
-        int currentMaxId = parkingSpotRepository.findMaxIdForLot(parkingLot.id());
-        System.out.println(currentMaxId);
-        currentMaxId++; // incrementing from the next available id
-        currentMaxId = createSpotsByType(parkingLot.id(),parkingLot.capacity_regular(),SpotType.REGULAR,currentMaxId);
-        currentMaxId = createSpotsByType(parkingLot.id(),parkingLot.capacity_handicap(),SpotType.HANDICAP,currentMaxId);
-        createSpotsByType(parkingLot.id(),parkingLot.capacity_ev(),SpotType.EV,currentMaxId);
+    private void createSpots(ParkingLotDTO parkingLot, int parkingLotId) {
+        int currentMaxId = parkingSpotRepository.findMaxIdForLot(parkingLotId);
+        currentMaxId++; // Start from the next available ID
+        currentMaxId = createSpotsByType(parkingLotId, parkingLot.capacity_regular(), SpotType.REGULAR, currentMaxId);
+        currentMaxId = createSpotsByType(parkingLotId, parkingLot.capacity_handicap(), SpotType.HANDICAP, currentMaxId);
+        createSpotsByType(parkingLotId, parkingLot.capacity_ev(), SpotType.EV, currentMaxId);
     }
 
     private int createSpotsByType(int parkingLotId, int capacity, SpotType type, int startingId) {
         for (int i = 0; i < capacity; i++) {
-            parkingSpotRepository.save(new ParkingSpotDTO(startingId++,parkingLotId,type,SpotStatus.AVAILABLE));
+            parkingSpotRepository.save(new ParkingSpotDTO(startingId++, parkingLotId, type, SpotStatus.AVAILABLE));
         }
-        return startingId; 
+        return startingId;
     }
 
     private void updateSpots(ParkingLotDTO parkingLot, int newCapacity, SpotType type) {
         int currentCapacity = parkingSpotRepository.countByTypeAndParkingLotId(type, parkingLot.id());
         int currentMaxId = parkingSpotRepository.findMaxIdForLot(parkingLot.id());
 
-        if (newCapacity>currentCapacity) {
-            for (int i = 0;i< (newCapacity-currentCapacity);i++) {
-                parkingSpotRepository.save(new ParkingSpotDTO(++currentMaxId,parkingLot.id(),type,SpotStatus.AVAILABLE));
+        if (newCapacity > currentCapacity) {
+            for (int i = 0; i < (newCapacity - currentCapacity); i++) {
+                parkingSpotRepository
+                        .save(new ParkingSpotDTO(++currentMaxId, parkingLot.id(), type, SpotStatus.AVAILABLE));
             }
-        } else if (newCapacity<currentCapacity) {
-            parkingSpotRepository.deleteExcessSpots(parkingLot.id(),type,(currentCapacity-newCapacity));
+        } else if (newCapacity < currentCapacity) {
+            parkingSpotRepository.deleteExcessSpots(parkingLot.id(), type, (currentCapacity - newCapacity));
         }
+    }
+
+    public ParkingLotDTO getParkingLotById(int id) {
+        return parkingLotRepository.findById(id);
+    }
+
+    public double getOccupancyRate(int parkingLotId) {
+        ParkingLotDTO lot = parkingLotRepository.findById(parkingLotId);
+        int totalSpots = (lot == null) ? 0 : lot.capacity_regular() + lot.capacity_handicap() + lot.capacity_ev();
+
+        if (totalSpots == 0) {
+            return 0.0;
+        }
+
+        int occupiedSpots = parkingSpotRepository.countOccupiedSpots(parkingLotId, SpotType.REGULAR) +
+                parkingSpotRepository.countOccupiedSpots(parkingLotId, SpotType.HANDICAP) +
+                parkingSpotRepository.countOccupiedSpots(parkingLotId, SpotType.EV);
+
+        return (double) occupiedSpots / totalSpots;
     }
 }

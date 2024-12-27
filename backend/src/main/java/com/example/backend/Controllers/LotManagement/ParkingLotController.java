@@ -3,6 +3,7 @@ package com.example.backend.Controllers.LotManagement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import com.example.backend.DTOs.ParkingLotDTO;
 import com.example.backend.Services.LotManagement.ParkingLotService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/parking-lots")
 public class ParkingLotController {
 
@@ -28,8 +30,8 @@ public class ParkingLotController {
     }
 
     @PostMapping
-    public void addParkingLot(@RequestBody ParkingLotDTO parkingLot) {
-        parkingLotService.addParkingLot(parkingLot);
+    public int addParkingLot(@RequestBody ParkingLotDTO parkingLot) {
+        return parkingLotService.addParkingLot(parkingLot);
     }
 
     @PutMapping("/{id}")
@@ -41,5 +43,9 @@ public class ParkingLotController {
     public void deleteParkingLot(@PathVariable int id) {
         parkingLotService.deleteParkingLot(id);
     }
-    
+
+    @GetMapping("/{parkingLotId}/occupancy-rate")
+    public double getOccupancyRate(@PathVariable int parkingLotId) {
+        return parkingLotService.getOccupancyRate(parkingLotId);
+    }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -9,15 +9,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from '@mui/material';
+} from "@mui/material";
 
-const SpotEditDialog = ({open,onClose,spot,onUpdate}) => {
-  const [status, setStatus] = useState(spot?.status || 'AVAILABLE');
-  const [type, setType] = useState(spot?.type || 'REGULAR');
+const SpotEditDialog = ({ open, onClose, spot, onUpdate }) => {
+  const [status, setStatus] = useState(spot?.status || "AVAILABLE");
+  const [type, setType] = useState(spot?.type || "REGULAR");
 
   const handleSubmit = () => {
-    onUpdate({ ...spot, status, type });
-    onClose();
+    const updatedSpotData = { type, status }; 
+    if (onUpdate) onUpdate(updatedSpotData); 
+    onClose(); 
   };
 
   return (
@@ -31,9 +32,9 @@ const SpotEditDialog = ({open,onClose,spot,onUpdate}) => {
             label="Status"
             onChange={(e) => setStatus(e.target.value)}
           >
-            <MenuItem value="available">Available</MenuItem>
-            <MenuItem value="reserved">Reserved</MenuItem>
-            <MenuItem value="occupied">Occupied</MenuItem>
+            <MenuItem value="AVAILABLE">Available</MenuItem>
+            <MenuItem value="RESERVED">Reserved</MenuItem>
+            <MenuItem value="OCCUPIED">Occupied</MenuItem>
           </Select>
         </FormControl>
 
