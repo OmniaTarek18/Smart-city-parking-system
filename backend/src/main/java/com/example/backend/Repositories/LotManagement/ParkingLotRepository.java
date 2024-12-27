@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.DTOs.ParkingLotDTO;
+import com.example.backend.DTOs.Point;
 
 @Repository
 public class ParkingLotRepository {
@@ -17,20 +18,38 @@ public class ParkingLotRepository {
     private JdbcTemplate jdbcTemplate;
 
     public List<ParkingLotDTO> findByOwnerId(int ownerId) {
-        String sql = "select id, name, latitude, longitude, capacity_regular, capacity_handicap, capacity_ev, owner_id from ParkingLot where owner_id = ?";
+        String sql = "select id, name, st_x(location) as latitude, st_y(location) as longitude, " +
+                     "capacity_regular, capacity_handicap, capacity_ev, owner_id " +
+                     "from ParkingLot where owner_id = ?";
         return jdbcTemplate.query(sql, this::mapToParkingLot, ownerId);
     }
 
     public void save(ParkingLotDTO parkingLot) {
-        String sql = "insert into ParkingLot (id, name, latitude, longitude, capacity_regular, capacity_handicap, capacity_ev, owner_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, parkingLot.id(), parkingLot.name(), parkingLot.latitude(), parkingLot.longitude(),
-                parkingLot.capacity_regular(), parkingLot.capacity_handicap(), parkingLot.capacity_ev(), parkingLot.owner_id());
+        String sql = "insert into ParkingLot (id, name, location, capacity_regular, capacity_handicap, capacity_ev, owner_id) " +
+                     "values (?, ?, point(?,?), ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, 
+            parkingLot.id(), 
+            parkingLot.name(), 
+            parkingLot.location().latitude(), 
+            parkingLot.location().longitude(),
+            parkingLot.capacity_regular(), 
+            parkingLot.capacity_handicap(), 
+            parkingLot.capacity_ev(), 
+            parkingLot.owner_id());
     }
 
     public void update(ParkingLotDTO parkingLot) {
-        String sql = "update ParkingLot set name = ?, latitude = ?, longitude = ?, capacity_regular = ?, capacity_handicap = ?, capacity_ev = ?, owner_id = ? where id = ?";
-        jdbcTemplate.update(sql, parkingLot.name(), parkingLot.latitude(), parkingLot.longitude(), parkingLot.capacity_regular(),
-                parkingLot.capacity_handicap(), parkingLot.capacity_ev(), parkingLot.owner_id(), parkingLot.id());
+        String sql = "update ParkingLot set name = ?, location = point(?, ?), capacity_regular = ?, " +
+                     "capacity_handicap = ?, capacity_ev = ?, owner_id = ? where id = ?";
+        jdbcTemplate.update(sql, 
+            parkingLot.name(), 
+            parkingLot.location().latitude(), 
+            parkingLot.location().longitude(),
+            parkingLot.capacity_regular(), 
+            parkingLot.capacity_handicap(), 
+            parkingLot.capacity_ev(), 
+            parkingLot.owner_id(), 
+            parkingLot.id());
     }
 
     public void delete(int id) {
@@ -47,8 +66,10 @@ public class ParkingLotRepository {
         return new ParkingLotDTO(
                 rows.getInt("id"),
                 rows.getString("name"),
-                rows.getDouble("latitude"),
-                rows.getDouble("longitude"),
+                new Point(
+                    rows.getDouble("latitude"),
+                    rows.getDouble("longitude")
+                ),
                 rows.getInt("capacity_regular"),
                 rows.getInt("capacity_handicap"),
                 rows.getInt("capacity_ev"),

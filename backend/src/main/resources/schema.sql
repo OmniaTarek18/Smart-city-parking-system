@@ -75,8 +75,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `smartParking`.`ParkingLot` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NULL,
-  `latitude` DOUBLE NULL,
-  `longitude` DOUBLE NULL,
+  `location` POINT NULL,
   `capacity_regular` INT ZEROFILL NULL,
   `capacity_handicap` INT ZEROFILL NULL,
   `capacity_ev` INT ZEROFILL NULL,
