@@ -1,7 +1,10 @@
 package com.example.backend.Services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.example.backend.DTOs.TopUserDTO;
 import com.example.backend.Enums.Role;
 import com.example.backend.Enums.UserStatus;
 import com.example.backend.Repositories.UserRepository;
@@ -19,5 +22,9 @@ public class DriverService {
         if (rowsAffected == 0) {
             throw new IllegalArgumentException("Email not found");
         }
+    }
+
+    public List<TopUserDTO> getTopDrivers(Integer pageSize, Integer pageNum) {
+        return userRepository.getTopDrivers(pageSize, pageNum);
     }
 }

@@ -2,6 +2,7 @@ package com.example.backend.Services;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -9,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.DTOs.LotManagerDTO;
+import com.example.backend.DTOs.LotManagerSearchCriteriaDTO;
+import com.example.backend.DTOs.ResponseLotManagerSearchDTO;
 import com.example.backend.Enums.Role;
 import com.example.backend.Enums.UserStatus;
 import com.example.backend.Repositories.LotManagerRepository;
@@ -59,5 +62,9 @@ public class LotManagerService {
                 }
             }
         }
+    }
+
+    public List<ResponseLotManagerSearchDTO> searchLotManagers(LotManagerSearchCriteriaDTO criteria) {
+        return lotManagerRepository.searchLotManagers(criteria);
     }
 }

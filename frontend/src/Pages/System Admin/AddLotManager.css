@@ -1,0 +1,69 @@
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.modal-content {
+    background-color: #fff !important; /* White background for the modal */
+    padding: 20px;
+    border-radius: 8px !important;
+    width: 400px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1010; /* Ensure the modal content is on top of the overlay */
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white !important;
+    color: black !important;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.success-message,
+.error-message {
+    margin-top: 10px;
+    color: green;
+    /* Success message */
+}
+
+.error-message {
+    color: red;
+    /* Error message */
+}
+
+.modal-content form {
+    display: grid;
+    gap: 10px;
+}
+
+.form-group {
+    display: grid;
+    gap: 10px;
+}
+
+.modal-content button{
+    padding: 8px 12px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}

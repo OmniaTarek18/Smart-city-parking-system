@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import RegisterationPage from "./Pages/Registeration/RegisterationPage";
 import PaymentMethodDetails from "./Pages/Registeration/PaymentMethodDetails";
 import "./App.css";
@@ -34,9 +34,10 @@ function App() {
         </Route>
 
         <Route path="/system-admin-home-page" element={<AdminHomePage />}>
-          <Route path="users" element={<Users />} />
-          <Route path="lot managers" element={<LotManagers />} />
-          <Route path="insights" element={<Insights />} />
+          <Route path="" element={<Navigate to="view-insights" />}/>
+          <Route path="manage-users" element={<Users />} />
+          <Route path="manage-lot managers" element={<LotManagers />} />
+          <Route path="view-insights" element={<Insights />} />
         </Route>
       </Routes>
     </UserProvider>

@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import com.example.backend.DTOs.TopUserDTO;
 import com.example.backend.Enums.Role;
 import com.example.backend.Enums.UserStatus;
 
@@ -94,5 +96,31 @@ public class UserRepository {
                 + "JOIN (SELECT 1 AS to_delete FROM user WHERE role = 'SystemAdmin' HAVING COUNT(*) > 1) AS admins "
                 + "WHERE u.id = ? AND u.role = 'SystemAdmin'";
         return jdbc.update(query, userId);
+    }
+
+    public List<TopUserDTO> getTopDrivers(Integer pageSize, Integer pageNum) {
+        String query = "SELECT d.id AS driver_id, " + 
+                        "d.name AS driver_name," + 
+                        "COALESCE(res.completed_reservations, 0) AS successful_reservations, " + 
+                        "COALESCE(viol.total_violations, 0) AS violations, " + 
+                        "(COALESCE(res.completed_reservations, 0) - COALESCE(viol.total_violations, 0)) AS score " +
+                        "FROM Driver d " + 
+                        "LEFT JOIN (SELECT Driver_id, COUNT(*) AS completed_reservations " + 
+                        "FROM Reservation WHERE status = 'COMPLETED' GROUP BY Driver_id) " +
+                        "res ON d.id = res.Driver_id " + 
+                        "LEFT JOIN (SELECT Driver_id, COUNT(*) AS total_violations " + 
+                        "FROM Violation GROUP BY Driver_id) " +
+                        "viol ON d.id = viol.Driver_id " +
+                        "ORDER BY score DESC, successful_reservations DESC " +
+                        "LIMIT ? OFFSET ?;";
+
+        return jdbc.query(query, (rs, rowNum) -> {
+            return new TopUserDTO(
+                rs.getString("driver_name"),
+                rs.getInt("successful_reservations"),
+                rs.getInt("violations"),
+                rs.getInt("score")
+            );
+        }, pageSize, (pageNum-1) * pageSize);
     }
 }
