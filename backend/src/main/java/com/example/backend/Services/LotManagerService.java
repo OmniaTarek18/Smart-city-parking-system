@@ -41,7 +41,7 @@ public class LotManagerService {
 
             userId = userRepository.insertUser(connection, lotManagerDTO.email(),
                     passwordEncoder.encode(lotManagerDTO.password()), Role.LotManager, UserStatus.ACTIVE);
-            lotManagerRepository.insertLotManager(connection, userId, lotManagerDTO.name(), lotManagerDTO.phone());
+            lotManagerRepository.insertLotManager(connection, userId, lotManagerDTO.firstName(), lotManagerDTO.lastName(), lotManagerDTO.phone());
 
             connection.commit();
         } catch (SQLException e) {

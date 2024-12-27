@@ -5,7 +5,8 @@ import AddLotManager from "./AddLotManager";
 
 function LotManagers() {
   const [lotManagers, setLotManagers] = useState([]);
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [pageNum, setPageNum] = useState(1);
@@ -15,7 +16,8 @@ function LotManagers() {
   const handleSearch = async () => {
     try {
       const criteria = {
-        name,
+        firstName,
+        lastName,
         email,
         phone,
         pageNum,
@@ -66,9 +68,15 @@ function LotManagers() {
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search by name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          placeholder="Search by first name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Search by last name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
         />
         <input
           type="text"
@@ -87,7 +95,8 @@ function LotManagers() {
       <table className="lot-managers-table">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Email</th>
             <th>Phone</th>
           </tr>
@@ -95,7 +104,8 @@ function LotManagers() {
         <tbody>
           {lotManagers.map((manager, index) => (
             <tr key={index}>
-              <td>{manager.name}</td>
+              <td>{manager.firstName}</td>
+              <td>{manager.lastName}</td>
               <td>{manager.email}</td>
               <td>{manager.phone}</td>
             </tr>

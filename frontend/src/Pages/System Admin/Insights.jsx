@@ -79,7 +79,8 @@ const Insights = () => {
           <table className="insights-table">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Total Revenue</th>
                 <th>Violations</th>
                 <th>Score</th>
@@ -88,7 +89,8 @@ const Insights = () => {
             <tbody>
               {topUsers.map((user, index) => (
                 <tr key={index}>
-                  <td>{user.name}</td>
+                  <td>{user.firstName}</td>
+                  <td>{user.lastName}</td>
                   <td>{user.totalRevenue}</td>
                   <td>{user.violations}</td>
                   <td>{user.score}</td>
@@ -142,13 +144,13 @@ const Insights = () => {
         <div className="pagination-controls-right">
           <button
             className="pagination-btn"
-            onClick={() => handleUserPageChange(-1)}
-            disabled={currentPageUsers === 1}
+            onClick={() => handleLotPageChange(-1)}
+            disabled={currentPageLots === 1}
           >
             ◀ 
           </button>
-          <span className="pagination-text">Page {currentPageUsers}</span>
-          <button className="pagination-btn" onClick={() => handleUserPageChange(1)}>
+          <span className="pagination-text">Page {currentPageLots}</span>
+          <button className="pagination-btn" onClick={() => handleLotPageChange(1)}>
              ▶
           </button>
         </div>

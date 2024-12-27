@@ -15,6 +15,7 @@ import LotManagers from "./Pages/System Admin/LotManagers";
 import Insights from "./Pages/System Admin/Insights";
 import Admins from "./Pages/System Admin/Admins";
 import { UserProvider } from "./Context/UserContext";
+import GoogleMap from "./Components/GoogleMap";
 
 function App() {
   return (

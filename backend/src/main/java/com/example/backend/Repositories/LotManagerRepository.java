@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.example.backend.DTOs.LotManagerSearchCriteriaDTO;
 import com.example.backend.DTOs.ResponseLotManagerSearchDTO;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -20,12 +22,13 @@ public class LotManagerRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void insertLotManager(Connection connection, Integer userId, String name, String phone) throws SQLException {
-        String insertLotManagerSQL = "INSERT INTO lotmanager (User_id, name, phone_number) VALUES (?, ?, ?)";
+    public void insertLotManager(Connection connection, Integer userId, String firstName, String lastName, String phone) throws SQLException {
+        String insertLotManagerSQL = "INSERT INTO lotmanager (User_id, first_name, last_name, phone_number) VALUES (?, ?, ?, ?)";
         try (PreparedStatement lotManagerStatement = connection.prepareStatement(insertLotManagerSQL)) {
             lotManagerStatement.setInt(1, userId);
-            lotManagerStatement.setString(2, name);
-            lotManagerStatement.setString(3, phone);
+            lotManagerStatement.setString(2, firstName);
+            lotManagerStatement.setString(3, lastName);
+            lotManagerStatement.setString(4, phone);
 
             lotManagerStatement.executeUpdate();
         }
@@ -33,16 +36,20 @@ public class LotManagerRepository {
 
     public List<ResponseLotManagerSearchDTO> searchLotManagers(LotManagerSearchCriteriaDTO criteria) {
         StringBuilder query = new StringBuilder(
-                "SELECT lm.id AS lotManagerId, u.email AS email, lm.name AS name, lm.phone_number AS phone " +
+                "SELECT lm.id AS lotManagerId, u.email AS email, lm.first_name AS firstName, lm.last_name AS lastName, lm.phone_number AS phone " +
                         "FROM LotManager lm " +
                         "JOIN User u ON lm.User_id = u.id " +
                         "WHERE 1=1");
 
         List<Object> params = new ArrayList<>();
 
-        if (criteria.name() != null && !criteria.name().isEmpty()) {
-            query.append(" AND LOWER(name) LIKE LOWER(?)");
-            params.add("%" + criteria.name() + "%");
+        if (criteria.firstName() != null && !criteria.firstName().isEmpty()) {
+            query.append(" AND LOWER(lm.first_name) LIKE LOWER(?)");
+            params.add("%" + criteria.firstName() + "%");
+        }
+        if (criteria.lastName() != null && !criteria.lastName().isEmpty()) {
+            query.append(" AND LOWER(lm.last_name) LIKE LOWER(?)");
+            params.add("%" + criteria.lastName() + "%");
         }
         if (criteria.email() != null && !criteria.email().isEmpty()) {
             query.append(" AND LOWER(email) LIKE LOWER(?)");
@@ -58,10 +65,19 @@ public class LotManagerRepository {
 
         return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
             return new ResponseLotManagerSearchDTO(
-                    rs.getString("name"),
+                    rs.getString("firstName"),
+                    rs.getString("lastName"),
                     rs.getString("email"),
                     rs.getString("phone"));
         }, params.toArray());
     }
-
+    
+    public int findLotManagerByUserId(int userId) {
+         try {
+            String query = "SELECT id FROM lotmanager WHERE User_id = ?";
+            return jdbcTemplate.queryForObject(query, int.class , userId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalArgumentException("Lot Manager is not found");
+        }
+    }
 }

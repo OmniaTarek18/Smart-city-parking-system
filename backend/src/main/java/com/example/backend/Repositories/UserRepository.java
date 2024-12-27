@@ -27,15 +27,13 @@ public class UserRepository {
     private final JdbcTemplate jdbc;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    // Method to authenticate a driver
-    public Integer findUserByEmailAndPassword(String email, String password, String type) {
+    public int findUserByEmailAndPassword(String email, String password) {
         try {
-            String query = "SELECT id, password FROM " + type + " WHERE email = ?";
+            String query = "SELECT id, password FROM user WHERE email = ?";
             return jdbc.queryForObject(query, (rs, rowNum) -> {
                 String storedPassword = rs.getString("password");
-                Integer id = rs.getInt("id");
+                int id = rs.getInt("id");
 
-                // Replace plain text comparison with a hashing library like BCrypt
                 if (!passwordEncoder.matches(password, storedPassword)) {
                     throw new IllegalArgumentException("Incorrect password");
                 }
@@ -118,7 +116,8 @@ public class UserRepository {
 
     public List<TopUserDTO> getTopDrivers(Integer pageSize, Integer pageNum) {
         String query = "SELECT d.id AS driver_id, " + 
-                        "d.name AS driver_name," + 
+                        "d.first_name AS driver_first_name," + 
+                        "d.last_name AS driver_last_name, " +
                         "COALESCE(res.completed_reservations, 0) AS successful_reservations, " + 
                         "COALESCE(viol.total_violations, 0) AS violations, " + 
                         "(COALESCE(res.completed_reservations, 0) - COALESCE(viol.total_violations, 0)) AS score " +
@@ -134,7 +133,8 @@ public class UserRepository {
 
         return jdbc.query(query, (rs, rowNum) -> {
             return new TopUserDTO(
-                rs.getString("driver_name"),
+                rs.getString("driver_first_name"),
+                rs.getString("driver_last_name"),
                 rs.getInt("successful_reservations"),
                 rs.getInt("violations"),
                 rs.getInt("score")
@@ -143,7 +143,7 @@ public class UserRepository {
     }
 
     public List<WorstDriverDTO> getWorstDrivers(int pageSize, int pageNum) {
-        String query = "SELECT u.email, d.name, d.phone_number, " + 
+        String query = "SELECT u.email, d.first_name, d.last_name, d.phone_number, " + 
                         "COALESCE(viol.total_violations, 0) AS total_violations, " + 
                         "COALESCE(faulty_spots.faulty_spots_count, 0) AS faulty_spots_count, " + 
                         "(COALESCE(viol.total_violations, 0) + COALESCE(faulty_spots.faulty_spots_count, 0)) AS score " + 
@@ -160,12 +160,27 @@ public class UserRepository {
         return jdbc.query(query, (rs, rowNum) -> {
             return new WorstDriverDTO(
                 rs.getString("email"),
-                rs.getString("name"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
                 rs.getString("phone_number"),
                 rs.getInt("total_violations"),
                 rs.getInt("faulty_spots_count"),
                 rs.getInt("score")
             );
         }, pageSize, (pageNum-1) * pageSize);
+    }
+    
+    public int addUser(String email, String password, Role role) {
+        try {
+            String query1 ="INSERT INTO user (email, password, role) values (?,?,?)";
+            String hashedPassword = passwordEncoder.encode(password);
+            jdbc.update(query1, email, hashedPassword, role.toString());
+            String query2 = "SELECT id FROM user WHERE email = ?";
+            int id = jdbc.queryForObject(query2, int.class, email);
+            return id;
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Email exists already");
+        }
     }
 }

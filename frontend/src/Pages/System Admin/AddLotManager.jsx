@@ -6,7 +6,8 @@ const AddLotManager = ({ onAddSuccess, onClose }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    name: '',
+    firstName: '',
+    lastName: '',
     phone: ''
   });
   const [errorMessage, setErrorMessage] = useState('');
@@ -31,7 +32,8 @@ const AddLotManager = ({ onAddSuccess, onClose }) => {
       setFormData({
         email: '',
         password: '',
-        name: '',
+        firstName: '',
+        lastName: '',
         phone: ''
       });
       onAddSuccess(); // Notify the parent component (LotManagers) that a lot manager was added successfully
@@ -70,11 +72,22 @@ const AddLotManager = ({ onAddSuccess, onClose }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">First Name</label>
             <input
               type="text"
-              id="name"
-              name="name"
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="name">Last Name</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
               value={formData.name}
               onChange={handleInputChange}
               required

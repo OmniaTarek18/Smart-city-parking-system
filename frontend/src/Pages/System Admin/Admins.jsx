@@ -42,9 +42,7 @@ function Admins() {
 
     // Handle Pagination
     const handlePagination = (direction) => {
-        const newPageNum = direction === 'next' ? pageNum + 1 : pageNum - 1;
-        setPageNum(newPageNum);
-        handleSearch();
+        setPageNum((prev) => Math.max(1, prev + direction));
     };
 
     const handleDeleteClick = (driver) => {
@@ -130,13 +128,13 @@ function Admins() {
             <div className="pagination-controls-right">
                 <button
                     className="pagination-btn"
-                    onClick={() => handlePagination("prev")}
+                    onClick={() => handlePagination(-1)}
                     disabled={pageNum === 1}
                 >
                     ◀
                 </button>
                 <span className="pagination-text">Page {pageNum}</span>
-                <button className="pagination-btn" onClick={() => handlePagination("next")}>
+                <button className="pagination-btn" onClick={() => handlePagination(1)}>
                     ▶
                 </button>
             </div>

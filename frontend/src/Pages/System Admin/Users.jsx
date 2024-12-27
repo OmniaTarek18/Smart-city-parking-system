@@ -77,7 +77,8 @@ function Users() {
       <table className="lot-managers-table">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Email</th>
             <th>Phone</th>
             <th>Total Violations</th>
@@ -89,7 +90,8 @@ function Users() {
         <tbody>
           {drivers.map((driver, index) => (
             <tr key={index}>
-              <td>{driver.name}</td>
+              <td>{driver.firstName}</td>
+              <td>{driver.lastName}</td>
               <td>{driver.email}</td>
               <td>{driver.phone}</td>
               <td>{driver.totalViolations}</td>
