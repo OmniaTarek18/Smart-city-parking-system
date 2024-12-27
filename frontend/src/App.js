@@ -13,6 +13,7 @@ import MyLot from "./Pages/Parking Lot Admin/MyLot";
 import Users from "./Pages/System Admin/Users";
 import LotManagers from "./Pages/System Admin/LotManagers";
 import Insights from "./Pages/System Admin/Insights";
+import Admins from "./Pages/System Admin/Admins";
 import { UserProvider } from "./Context/UserContext";
 
 function App() {
@@ -35,9 +36,10 @@ function App() {
 
         <Route path="/system-admin-home-page" element={<AdminHomePage />}>
           <Route path="" element={<Navigate to="view-insights" />}/>
-          <Route path="manage-users" element={<Users />} />
+          <Route path="manage-drivers" element={<Users />} />
           <Route path="manage-lot managers" element={<LotManagers />} />
           <Route path="view-insights" element={<Insights />} />
+          <Route path="manage-admins" element={<Admins />} />
         </Route>
       </Routes>
     </UserProvider>

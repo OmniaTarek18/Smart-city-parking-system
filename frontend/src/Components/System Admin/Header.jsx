@@ -6,7 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 
 
-const pages = ["View Insights","Manage Lot Managers", "Manage Users"];
+const pages = ["View Insights","Manage Lot Managers", "Manage Drivers", "Manage Admins"];
 const settings = ["Logout"];
 // const notifications = ["penality here 5$"];
 

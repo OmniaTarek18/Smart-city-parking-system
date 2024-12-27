@@ -8,6 +8,7 @@
     gap: 10px;
     margin-top: 40px;
     margin-bottom: 20px;
+    justify-content: center;
     align-items: center;
     position: relative;
 }
@@ -17,7 +18,7 @@
     font-size: 14px;
     border: 1px solid #ccc;
     height: 40px;
-    width: 200px;
+    width: 300px;
     box-sizing: border-box;
 }
 
@@ -54,6 +55,19 @@
 .lot-managers-table tr:hover {
     background-color: #f9f9f9;
     /* Optional: Highlight on hover */
+}
+
+.lot-managers-table button {
+    padding: 8px 12px;
+    background-color: #585858;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.lot-managers-table button:hover {
+    background-color: #333333;
 }
 
 .popupButton {
