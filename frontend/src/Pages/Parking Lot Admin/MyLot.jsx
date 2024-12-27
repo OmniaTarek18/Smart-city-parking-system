@@ -7,6 +7,7 @@ import {
   CssBaseline,
   ThemeProvider,
   createTheme,
+  Pagination,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { blue } from "@mui/material/colors";
@@ -20,7 +21,7 @@ import {
 } from "../../api/lotManagementAPI";
 import { fetchParkingSpots } from "../../api/parkingSpotsAPI";
 import geocodeLocation from "../../utils/geocodeLocation";
-import { getParkingLotsByOwnerId } from "../../api/lotManagementAPI"; 
+import { getParkingLotsByOwnerId } from "../../api/lotManagementAPI";
 
 const theme = createTheme({
   palette: {
@@ -35,19 +36,21 @@ function MyLot() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedLot, setSelectedLot] = useState(null);
   const [editingLot, setEditingLot] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); 
+  const [itemsPerPage] = useState(10); 
 
   const ownerId = 1; // temp till merge isa
 
   useEffect(() => {
     const fetchLots = async () => {
       try {
-        const fetchedLots = await getParkingLotsByOwnerId(ownerId); 
+        const fetchedLots = await getParkingLotsByOwnerId(ownerId);
         setLots(fetchedLots); 
       } catch (error) {
         setError("Failed to load parking lots.");
-        console.error(error);
+        console.error("Error fetching lots:", error);
       } finally {
         setLoading(false);
       }
@@ -55,6 +58,12 @@ function MyLot() {
 
     fetchLots();
   }, [ownerId]);
+
+  const totalPages = Math.ceil(lots.length / itemsPerPage);
+  const displayedLots = lots.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleAddLot = async (lotData) => {
     try {
@@ -147,10 +156,23 @@ function MyLot() {
     }
   };
 
-  const handleViewLot = (lotId) => {
+const handleViewLot = async (lotId) => {
+  try {
     const lot = lots.find((l) => l.id === lotId);
-    setSelectedLot(lot);
-  };
+
+    if (lot) {
+      const updatedSpots = await fetchParkingSpots(lotId);
+      setLots((prevLots) =>
+        prevLots.map((l) =>
+          l.id === lotId ? { ...l, spots: updatedSpots } : l
+        )
+      );
+      setSelectedLot({ ...lot, spots: updatedSpots });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const handleSpotStatusChange = (lotId, spotId, newStatus) => {
     setLots((prevLots) =>
@@ -167,21 +189,39 @@ function MyLot() {
     );
   };
 
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Parking Lot Manager
-          </Typography>
-
           {loading ? (
             <Typography variant="body1">Loading...</Typography>
           ) : error ? (
             <Typography variant="body1" color="error">
               {error}
             </Typography>
+          ) : displayedLots.length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "60vh",
+                textAlign: "center",
+              }}
+            >
+              <Typography
+                variant="h5"
+                color="textSecondary"
+                sx={{ fontSize: "24px" }}
+              >
+                No data available.
+              </Typography>
+            </Box>
           ) : selectedLot ? (
             <>
               <Box sx={{ mb: 2 }}>
@@ -203,31 +243,42 @@ function MyLot() {
           ) : (
             <>
               <LotList
-                lots={lots}
+                lots={displayedLots} 
                 onEdit={handleEditLot}
                 onDelete={handleDeleteLot}
                 onView={handleViewLot}
               />
-              <Fab
-                color="primary"
-                sx={{
-                  position: "fixed",
-                  bottom: 16,
-                  right: 16,
-                  "&:hover": {
-                    transform: "scale(1.1)",
-                  },
-                  transition: "transform 0.2s",
-                }}
-                onClick={() => {
-                  setIsFormOpen(true);
-                  setEditingLot(null);
-                }}
-              >
-                <Add />
-              </Fab>
+
+              {/* mui pagination */}
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                <Pagination
+                  count={totalPages} 
+                  page={currentPage} 
+                  onChange={handlePageChange}
+                  variant="outlined"
+                  shape="rounded"
+                />
+              </Box>
             </>
           )}
+          <Fab
+            color="primary"
+            sx={{
+              position: "fixed",
+              bottom: 16,
+              right: 16,
+              "&:hover": {
+                transform: "scale(1.1)",
+              },
+              transition: "transform 0.2s",
+            }}
+            onClick={() => {
+              setIsFormOpen(true);
+              setEditingLot(null);
+            }}
+          >
+            <Add />
+          </Fab>
 
           {isFormOpen && (
             <LotForm
