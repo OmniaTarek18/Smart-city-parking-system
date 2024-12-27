@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@date-io/date-fns": "^3.2.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.3.0",
@@ -18,6 +17,8 @@
     "frontend": "file:",
     "libphonenumber-js": "^1.11.17",
     "react": "^18.2.0",
+    "react-datepicker": "^7.5.0",
+    "react-datetime-picker": "^6.0.1",
     "react-dom": "^18.2.0",
     "react-native-google-places-autocomplete": "^2.5.7",
     "react-phone-input-2": "^2.15.1",

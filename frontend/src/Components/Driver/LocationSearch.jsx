@@ -6,15 +6,13 @@ import {
   FormControlLabel,
   Radio,
   TextField,
-  MenuItem,
   Typography,
   Button,
-  colors,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const options = [
   { value: "new york", label: "New York" },
@@ -22,7 +20,6 @@ const options = [
   { value: "chicago", label: "Chicago" },
   { value: "houston", label: "Houston" },
   { value: "miami", label: "Miami" },
-  // Add more locations as needed
 ];
 
 const LocationSearch = () => {
@@ -95,33 +92,29 @@ const LocationSearch = () => {
         }}
       />
 
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DateTimePicker
-          label="From"
-          value={startTime}
+      <div style={{ marginBottom: "20px" }}>
+        <Typography variant="subtitle1">From:</Typography>
+        {/* <DatePicker
+          selected={startTime}
           onChange={handleStartTimeChange}
-          disablePast
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              fullWidth
-              sx={{ backgroundColor: "white" }}
-            />
-          )}
-          sx={{marginRight: "50px"}}
-        />
+          showTimeSelect
+          dateFormat="Pp"
+          minDate={new Date()}
+          className="custom-datepicker"
+          style={{ width: "100%", padding: "10px" }}
+        /> */}
+      </div>
 
-        <TextField
-          label="Duration (HH:MM)"
-          type="time"
-          name="duration"
-          value={`${String(duration.hours).padStart(2, "0")}:${String(
-            duration.minutes
-          ).padStart(2, "0")}`}
-          onChange={handleDurationChange}
-          sx={{ width: "200px" }}
-        />
-      </LocalizationProvider>
+      <TextField
+        label="Duration (HH:MM)"
+        type="time"
+        name="duration"
+        value={`${String(duration.hours).padStart(2, "0")}:${String(
+          duration.minutes
+        ).padStart(2, "0")}`}
+        onChange={handleDurationChange}
+        sx={{ width: "200px", marginBottom: "20px" }}
+      />
 
       <RadioGroup
         row
