@@ -1,0 +1,8 @@
+.regist{
+    width: 40%;
+    transform: scale(0.8); /* Scale down to 80% of the original size */
+    transform-origin: center; /* Keep scaling centered */
+}
+
+
+
