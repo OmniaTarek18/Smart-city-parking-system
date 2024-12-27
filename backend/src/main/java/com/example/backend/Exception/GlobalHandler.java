@@ -10,6 +10,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class GlobalHandler {
@@ -30,11 +31,18 @@ public class GlobalHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
-            .getAllErrors().stream()
-            .map(ObjectError::getDefaultMessage)
-            .collect(Collectors.toList());
-            
+                .getAllErrors().stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.toList());
+
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleResponseStatusException(ResponseStatusException exception) {
+        return ResponseEntity
+                .status(exception.getStatusCode())
+                .body(exception.getReason());
     }
 
 }

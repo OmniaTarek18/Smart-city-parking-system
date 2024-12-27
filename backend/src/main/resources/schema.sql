@@ -3,7 +3,6 @@
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
 -- -----------------------------------------------------
 -- Schema smartParking
 -- -----------------------------------------------------
@@ -18,9 +17,9 @@ USE `smartParking` ;
 -- Table `smartParking`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`User` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `email` VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
+  `password` VARCHAR(60) NULL,
   `role` ENUM('SystemAdmin', 'LotManager', 'Driver') NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
@@ -31,10 +30,11 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`LotManager`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`LotManager` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `User_id` INT NOT NULL,
-  `name` VARCHAR(45) NULL,
-  `phone_number` VARCHAR(45) NULL,
+  `first_name` VARCHAR(45) NOT NULL,
+  `last_name` VARCHAR(45) NOT NULL,
+  `phone_number` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_LotManager_User1_idx` (`User_id` ASC) VISIBLE,
   CONSTRAINT `fk_LotManager_User1`
@@ -49,16 +49,17 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`Driver`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`Driver` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `User_id` INT NOT NULL,
-  `name` VARCHAR(45) NULL,
-  `phone_number` VARCHAR(45) NULL,
-  `license_plate_number` VARCHAR(45) NULL,
-  `card_no` VARCHAR(45) NULL,
-  `cvv` VARCHAR(45) NULL,
-  `card_expiry_date` DATE NULL,
+  `first_name` VARCHAR(45) NOT NULL,
+  `last_name` VARCHAR(45) NOT NULL,
+  `card_holder_name` VARCHAR(45) NOT NULL,
+  `phone_number` VARCHAR(20) NOT NULL,
+  `license_plate_number` VARCHAR(10) NOT NULL,
+  `card_no` VARCHAR(45) NOT NULL,
+  `cvv` VARCHAR(3) NOT NULL,
+  `card_expiry_date` DATE NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `licensePlateNumber_UNIQUE` (`license_plate_number` ASC) VISIBLE,
   INDEX `fk_Driver_User1_idx` (`User_id` ASC) VISIBLE,
   CONSTRAINT `fk_Driver_User1`
     FOREIGN KEY (`User_id`)
@@ -74,8 +75,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `smartParking`.`ParkingLot` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NULL,
-  `location` VARCHAR(45) NULL,
-  `capacity` INT ZEROFILL NULL,
+  `latitude` DOUBLE NULL,
+  `longitude` DOUBLE NULL,
+  `capacity_regular` INT ZEROFILL NULL,
+  `capacity_handicap` INT ZEROFILL NULL,
+  `capacity_ev` INT ZEROFILL NULL,
   `owner_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_ParkingLot_LotManager_idx` (`owner_id` ASC) VISIBLE,
@@ -83,9 +87,8 @@ CREATE TABLE IF NOT EXISTS `smartParking`.`ParkingLot` (
     FOREIGN KEY (`owner_id`)
     REFERENCES `smartParking`.`LotManager` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `smartParking`.`ParkingSpot`

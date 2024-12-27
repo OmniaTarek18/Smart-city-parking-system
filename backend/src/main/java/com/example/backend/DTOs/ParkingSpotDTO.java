@@ -4,7 +4,7 @@ import com.example.backend.Enums.SpotStatus;
 
 public record ParkingSpotDTO(
         int id,
-        int parkingLotId,
+        int ParkingLot_id,
         SpotType type,
         SpotStatus status
 ) {

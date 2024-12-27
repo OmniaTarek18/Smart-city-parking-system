@@ -5,7 +5,9 @@ public record ParkingLotDTO(
         String name,
         double latitude,
         double longitude,
-        int capacity,
-        int ownerId
+        int capacity_regular,
+        int capacity_handicap,
+        int capacity_ev,
+        int owner_id
 ) {
 }
