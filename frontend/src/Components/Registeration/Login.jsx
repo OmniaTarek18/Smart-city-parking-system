@@ -37,6 +37,7 @@ function Login() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
+        
         const data = await response.json();
         console.log("Logged in successfully:", data);
         setUserId(data);
@@ -46,6 +47,7 @@ function Login() {
           navigate("/lot-admin-home-page/my lot");
         else navigate("/system-admin-home-page/insights");
         setError(null);
+
       } else {
         return response.text().then((message) => {
           setError(message);

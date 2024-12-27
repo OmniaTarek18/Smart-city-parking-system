@@ -3,23 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { TextField, Button, Typography } from "@mui/material";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
-import axios from "axios"; // Use axios for API requests
+import axios from "axios";
 import "./registeration.css";
+import { useLocation } from "react-router-dom";
 
 function SignUp() {
+  const location = useLocation();
+  const creditCard = location.state || {};
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(creditCard || {
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
-    licensePlateNumber: "",
+    licensePlate: "",
     password: "",
     confirmPassword: "",
   });
-
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,34 +38,40 @@ function SignUp() {
       const response = await axios.get(
         `https://emailvalidation.abstractapi.com/v1/?api_key=${key}&email=${email}`
       );
-      console.log(response.data); // Add this line to check the response
-      return response.data.is_smtp_valid.value; // Corrected the typo
+      return response.data.is_smtp_valid.value;
     } catch (error) {
       console.error("Email validation error:", error);
-      return false; // Assume invalid on error
+      return false;
     }
   };
 
   const validate = async () => {
     const newErrors = {};
 
-    // Name validation
+    // First and last name validation
     const nameRegex = /^[a-zA-Z]{3,}$/;
-    if (formData.firstName && !nameRegex.test(formData.firstName)) {
-      newErrors.firstName = "Enter a valid name with at least 3 characters";
+    if (!formData.firstName || !nameRegex.test(formData.firstName)) {
+      newErrors.firstName = "Enter a valid first name (at least 3 characters)";
     }
-    if (formData.lastName && !nameRegex.test(formData.lastName)) {
-      newErrors.lastName = "Enter a valid name with at least 3 characters";
+    if (!formData.lastName || !nameRegex.test(formData.lastName)) {
+      newErrors.lastName = "Enter a valid last name (at least 3 characters)";
     }
 
     // Email validation
-    if (formData.email) {
-      setLoading(true); // Show loading spinner
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else {
+      setLoading(true);
       const isEmailValid = await validateEmail(formData.email);
-      setLoading(false); // Hide loading spinner
+      setLoading(false);
       if (!isEmailValid) {
         newErrors.email = "Invalid email address";
       }
+    }
+
+    // Phone number validation
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = "Phone number is required";
     }
 
     // Password validation
@@ -74,26 +82,23 @@ function SignUp() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    // License plate validation 3 letters followed by 3 numbers
+    // License plate validation
     const licensePlateRegex = /^[A-Za-z]{3}[0-9]{3}$/;
-    if (
-      formData.licensePlateNumber &&
-      !licensePlateRegex.test(formData.licensePlateNumber)
-    ) {
-      newErrors.licensePlateNumber = "Invalid license plate number";
+    if (!formData.licensePlate || !licensePlateRegex.test(formData.licensePlate)) {
+      newErrors.licensePlate = "License plate must be 3 letters followed by 3 numbers";
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // returns true if no errors
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = await validate();
-
     if (isValid) {
       console.log(formData);
-      navigate("/payment-details");
+      const { confirmPassword, ...dataToSend } = formData;
+      navigate("/payment-details", { state: dataToSend });
     }
   };
 
@@ -130,7 +135,7 @@ function SignUp() {
           />
         </div>
         <PhoneInput
-          country={"us"}
+          country="us"
           value={formData.phoneNumber}
           onChange={handlePhoneChange}
           inputStyle={{
@@ -140,19 +145,23 @@ function SignUp() {
             borderRadius: "4px",
             borderColor: errors.phoneNumber ? "red" : "#c4c4c4",
           }}
-          required
         />
+        {errors.phoneNumber && (
+          <Typography color="error" variant="body2">
+            {errors.phoneNumber}
+          </Typography>
+        )}
         <TextField
           fullWidth
-          label="License Plate Number"
-          name="licensePlateNumber"
+          label="License Plate"
+          name="licensePlate"
           type="text"
           margin="normal"
-          value={formData.licensePlateNumber}
+          value={formData.licensePlate}
           onChange={handleChange}
           required
-          error={Boolean(errors.licensePlateNumber)}
-          helperText={errors.licensePlateNumber}
+          error={Boolean(errors.licensePlate)}
+          helperText={errors.licensePlate}
         />
         <TextField
           fullWidth
@@ -180,7 +189,7 @@ function SignUp() {
         />
         <TextField
           fullWidth
-          label="Password Confirmation"
+          label="Confirm Password"
           name="confirmPassword"
           type="password"
           margin="normal"

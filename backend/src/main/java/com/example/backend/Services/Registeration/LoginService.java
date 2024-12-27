@@ -27,6 +27,8 @@ public class LoginService {
             return driverRepository.findDriverByUserId(userId);
         else if (loginRequest.role() == Role.LotManager)
             return lotManagerRepository.findLotManagerByUserId(userId);
+        else if (loginRequest.role() == Role.SystemAdmin)
+            return userId;
         else
             throw new IllegalArgumentException("Role is not found");
 

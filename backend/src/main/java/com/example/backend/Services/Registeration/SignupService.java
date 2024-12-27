@@ -1,6 +1,7 @@
 package com.example.backend.Services.Registeration;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.DTOs.SignupRequest;
 import com.example.backend.Enums.Role;
@@ -15,11 +16,6 @@ public class SignupService {
     private final DriverRepository driverRepository;
     private final UserRepository userRepository;
 
-    // save account to database
-    // then save the user info
-    // and then return that id
-    // first check if the email exists or not
-    // if not save the user else throw exception
     public int signup(SignupRequest signupRequest) {
         
         int userId = userRepository.addUser(signupRequest.email(), signupRequest.password(), Role.Driver);
