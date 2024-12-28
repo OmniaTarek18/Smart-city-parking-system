@@ -1,0 +1,88 @@
+.insights-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.insights-section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.insights-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.insights-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.insights-table th,
+.insights-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.insights-table th {
+    background-color: #585858;
+    /* Optional: Add a background color */
+    color: white;
+    font-weight: bold;
+}
+
+.insights-table tr:hover {
+    background-color: #f9f9f9;
+    /* Optional: Highlight on hover */
+}
+
+.insights-table-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.insights-table-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+}
+
+.insights-table-container::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.pagination-controls-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.pagination-btn {
+    padding: 6px 12px;
+    border: none;
+    background-color: #333333;
+    color: white;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.pagination-btn:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+}
+
+.pagination-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}

@@ -45,7 +45,7 @@ function Login() {
            navigate("/user-home-page/search");
         else if (formData.role === "LotManager")
           navigate("/lot-admin-home-page/my lot");
-        else navigate("/system-admin-home-page/insights");
+        else navigate("/system-admin-home-page/view-insights");
         setError(null);
 
       } else {
