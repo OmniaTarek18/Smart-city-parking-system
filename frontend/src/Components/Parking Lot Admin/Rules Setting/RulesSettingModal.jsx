@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
-import './rulessettingmodal.css';
-import { Clock,TriangleAlert,Banknote,Hourglass } from "lucide-react";
+import React, { useState } from "react";
+import "./rulessettingmodal.css";
+import { Clock, TriangleAlert, Banknote, Hourglass } from "lucide-react";
+
 const RulesSettingModal = ({ show, onClose, onSave }) => {
   const [time_limit, setTimeLimit] = useState(2);
-  const [cost, setPenaltyCost] = useState(20);
-  const [time, setPenaltyTime] = useState(15);
+  const [overstayCost, setOverstayCost] = useState(20);
+  const [overstayTime, setOverstayTime] = useState(15);
+  const [cancelationCost, setCancelationCost] = useState(10);
+  const [cancelationTime, setCancelationTime] = useState(10);
+  const [noshowCost, setNoshowCost] = useState(30);
+  const [noshowTime, setNoshowTime] = useState(20);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ time_limit, cost, time });
+    onSave({
+      time_limit,
+      penalties: {
+        overstay: { cost: overstayCost, time: overstayTime },
+        cancelation: { cost: cancelationCost, time: cancelationTime },
+        noshowup: { cost: noshowCost, time: noshowTime },
+      },
+    });
     onClose();
   };
 
@@ -52,39 +64,87 @@ const RulesSettingModal = ({ show, onClose, onSave }) => {
               Penalty Rules
             </h3>
             <div className="penalty-grid">
-              <div className="rules-input-group">
-                <label htmlFor="penaltyCost">
-                  <Banknote className="rules-icons" />
-                  Penalty Cost
+              {/* overstay */}
+              <div className="penalty-row">
+                <label>
+                  <TriangleAlert className="rules-icons" />
+                  Overstay Penalty
                 </label>
                 <div className="cost-input-wrapper">
                   <span className="currency-symbol">L.E.</span>
                   <input
                     type="number"
-                    id="penaltyCost"
-                    value={cost}
-                    onChange={(e) => setPenaltyCost(Number(e.target.value))}
+                    value={overstayCost}
+                    onChange={(e) => setOverstayCost(Number(e.target.value))}
                     min="0"
                     step="0.5"
                   />
                 </div>
-              </div>
-
-              <div className="rules-input-group">
-                <label htmlFor="penaltyTime">
-                  <Hourglass className="rules-icons" />
-                  Grace Period
-                </label>
                 <div className="time-input-wrapper">
                   <input
                     type="number"
-                    id="penaltyTime"
-                    value={time}
-                    onChange={(e) => setPenaltyTime(Number(e.target.value))}
+                    value={overstayTime}
+                    onChange={(e) => setOverstayTime(Number(e.target.value))}
                     min="5"
                     max="60"
                   />
-                  <span className="time-unit">minutes</span>
+                  <span className="time-unit">min</span>
+                </div>
+              </div>
+
+              {/* cancelation penalty */}
+              <div className="penalty-row">
+                <label>
+                  <TriangleAlert className="rules-icons" />
+                  Cancelation Penalty
+                </label>
+                <div className="cost-input-wrapper">
+                  <span className="currency-symbol">L.E.</span>
+                  <input
+                    type="number"
+                    value={cancelationCost}
+                    onChange={(e) => setCancelationCost(Number(e.target.value))}
+                    min="0"
+                    step="0.5"
+                  />
+                </div>
+                <div className="time-input-wrapper">
+                  <input
+                    type="number"
+                    value={cancelationTime}
+                    onChange={(e) => setCancelationTime(Number(e.target.value))}
+                    min="5"
+                    max="60"
+                  />
+                  <span className="time-unit">min</span>
+                </div>
+              </div>
+
+              {/* no show up penalty */}
+              <div className="penalty-row">
+                <label>
+                  <TriangleAlert className="rules-icons" />
+                  No-Show Penalty
+                </label>
+                <div className="cost-input-wrapper">
+                  <span className="currency-symbol">L.E.</span>
+                  <input
+                    type="number"
+                    value={noshowCost}
+                    onChange={(e) => setNoshowCost(Number(e.target.value))}
+                    min="0"
+                    step="0.5"
+                  />
+                </div>
+                <div className="time-input-wrapper">
+                  <input
+                    type="number"
+                    value={noshowTime}
+                    onChange={(e) => setNoshowTime(Number(e.target.value))}
+                    min="5"
+                    max="60"
+                  />
+                  <span className="time-unit">min</span>
                 </div>
               </div>
             </div>

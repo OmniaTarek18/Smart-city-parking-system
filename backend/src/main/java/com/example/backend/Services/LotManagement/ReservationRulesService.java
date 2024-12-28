@@ -1,10 +1,10 @@
-package com.example.backend.Services;
+package com.example.backend.Services.LotManagement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.DTOs.ReservationRulesDTO;
-import com.example.backend.Repositories.ReservationRulesRepository;
+import com.example.backend.Repositories.LotManagement.ReservationRulesRepository;
 
 @Service
 public class ReservationRulesService {

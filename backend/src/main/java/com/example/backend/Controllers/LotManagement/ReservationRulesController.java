@@ -1,11 +1,12 @@
-package com.example.backend.Controllers.LotManager;
+package com.example.backend.Controllers.LotManagement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.DTOs.ReservationRulesDTO;
-import com.example.backend.Services.ReservationRulesService;
+import com.example.backend.Services.LotManagement.ReservationRulesService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/reservation-rules")
 public class ReservationRulesController {

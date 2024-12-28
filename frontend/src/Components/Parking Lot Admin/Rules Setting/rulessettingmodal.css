@@ -10,17 +10,20 @@
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(5px);
+  overflow-y: auto;
 }
 
 .rules-modal-container {
   background: linear-gradient(145deg, #ffffff, #f5f7fa);
   border-radius: 20px;
-  padding: 1rem;
+  padding: 1.5rem;
   width: 80%;
-  max-width: 600px;
+  max-width: 500px;
+  max-height: 80vh;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   transform: translateY(0);
   animation: modalSlideIn 0.3s ease-out;
+  overflow-y: auto;
 }
 
 @keyframes modalSlideIn {
@@ -38,8 +41,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
   border-bottom: 2px solid #e2e8f0;
 }
 
@@ -78,11 +81,13 @@
   margin-bottom: 1.5rem;
   font-weight: 600;
 }
-.rules-icons{
-  margin-right:5px;;
+
+.rules-icons {
+  margin-right: 5px;
 }
+
 .rules-input-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .rules-input-group label {
@@ -97,8 +102,10 @@
   display: flex;
   align-items: center;
   background: #f8fafc;
-  width: 200px;
-  border: 2px solid #e2e8f0;
+  width: 100%;
+  max-width: 200px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 0.5rem;
   transition: all 0.2s;
@@ -115,7 +122,8 @@
   border: none;
   background: none;
   font-size: 1.1rem;
-  width: 100px;
+  width: 100%;
+  max-width: 100px;
   padding: 0.5rem;
   color: #1e293b;
 }
@@ -129,18 +137,30 @@
 .time-unit {
   color: #64748b;
   font-weight: 500;
+  margin-left: 0.5rem;
   padding: 0 0.5rem;
 }
 
 .penalty-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
+
+.penalty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
 
 .rules-modal-footer {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -179,11 +199,11 @@
   box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
 }
 
-/* for responsive design */
+/* responsive */
 @media (max-width: 640px) {
   .rules-modal-container {
-    padding: 1.5rem;
-    width: 95%;
+    padding: 1rem;
+    width: 90%;
   }
 
   .penalty-grid {
