@@ -22,34 +22,6 @@ function History() {
     return 'PAST';
   };
 
-  useEffect(() => {
-    if (!userId) return; // Ensure user ID is available
-    setLoading(true);
-
-    const status = getStatusByTabIndex(value);
-    const eventSource = new EventSource(
-      `http://localhost:8080/bookings/stream/${userId}?status=${status}`
-    );
-
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log(data)
-      setReservations((prev) => ({
-        ...prev,
-        [status.toLowerCase()]: data,
-      }));
-      setLoading(false);
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('Error with SSE:', error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [userId, value]); // Refetch when user ID or tab index changes
 
   const renderReservations = (reservations) => {
     if (loading) {
