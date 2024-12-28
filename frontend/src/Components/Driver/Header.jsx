@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
 
-const pages = ["History", "Profile"];
+const pages = ["MyBookings", "Profile"];
 const settings = ["Logout"];
 // const notifications = ["penality here 5$"];
 

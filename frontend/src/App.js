@@ -24,7 +24,7 @@ function App() {
         <Route path="/payment-details" element={<PaymentMethodDetails />} />
         
         <Route path="/user-home-page" element={<HomePage />}>
-          <Route path="history" element={<History />} />
+          <Route path="myBookings" element={<History />} />
           <Route path="profile" element={<Profile />} />
           <Route path="search" element={<Search />} />
           <Route path="display-lots" element={<DisplayLots />} />
