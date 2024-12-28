@@ -132,13 +132,13 @@ public class UserRepository {
                         "LIMIT ? OFFSET ?;";
 
         return jdbc.query(query, (rs, rowNum) -> {
-            return new TopUserDTO(
-                rs.getString("driver_first_name"),
-                rs.getString("driver_last_name"),
-                rs.getInt("successful_reservations"),
-                rs.getInt("violations"),
-                rs.getInt("score")
-            );
+            TopUserDTO userDTO = new TopUserDTO();
+            userDTO.setFirstName(rs.getString("driver_first_name"));
+            userDTO.setLastName(rs.getString("driver_last_name"));
+            userDTO.setTotalRevenue(rs.getInt("successful_reservations"));
+            userDTO.setViolations(rs.getInt("violations"));
+            userDTO.setScore(rs.getInt("score"));
+            return userDTO;
         }, pageSize, (pageNum-1) * pageSize);
     }
 

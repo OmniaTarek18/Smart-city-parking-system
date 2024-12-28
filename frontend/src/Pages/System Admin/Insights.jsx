@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import './Insights.css';
+import './LotManagers.css';
 
 const Insights = () => {
   const [topUsers, setTopUsers] = useState([]);
@@ -57,6 +57,58 @@ const Insights = () => {
     }
   };
 
+  // Add this within the Insights component
+  const generateTopUsersReport = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/admin/reports/top-users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "TopUsersReport.pdf"; // Adjust the file name as needed
+        link.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error("Failed to generate top users report");
+      }
+    } catch (error) {
+      console.error("Error generating top users report:", error);
+    }
+  };
+
+  const generateTopParkingLotsReport = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/admin/reports/top-parking-lots", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "TopParkingLotsReport.pdf"; // Adjust the file name as needed
+        link.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error("Failed to generate top parking lots report");
+      }
+    } catch (error) {
+      console.error("Error generating top parking lots report:", error);
+    }
+  };
+
+
   useEffect(() => {
     fetchTopUsers(currentPageUsers);
     fetchTopParkingLots(currentPageLots);
@@ -105,13 +157,16 @@ const Insights = () => {
             onClick={() => handleUserPageChange(-1)}
             disabled={currentPageUsers === 1}
           >
-            ◀ 
+            ◀
           </button>
           <span className="pagination-text">Page {currentPageUsers}</span>
           <button className="pagination-btn" onClick={() => handleUserPageChange(1)}>
-             ▶
+            ▶
           </button>
         </div>
+        <button className="popupButton" onClick={generateTopUsersReport}>
+          Download Top Users Report
+        </button>
       </div>
 
       {/* Top Parking Lots Section */}
@@ -147,13 +202,16 @@ const Insights = () => {
             onClick={() => handleLotPageChange(-1)}
             disabled={currentPageLots === 1}
           >
-            ◀ 
+            ◀
           </button>
           <span className="pagination-text">Page {currentPageLots}</span>
           <button className="pagination-btn" onClick={() => handleLotPageChange(1)}>
-             ▶
+            ▶
           </button>
         </div>
+        <button className="popupButton" onClick={generateTopParkingLotsReport}>
+          Download Top Parking Lots Report
+        </button>
       </div>
     </div>
   );
