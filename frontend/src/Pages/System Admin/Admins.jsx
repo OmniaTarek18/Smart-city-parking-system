@@ -43,6 +43,7 @@ function Admins() {
     // Handle Pagination
     const handlePagination = (direction) => {
         setPageNum((prev) => Math.max(1, prev + direction));
+        handleSearch();
     };
 
     const handleDeleteClick = (driver) => {
