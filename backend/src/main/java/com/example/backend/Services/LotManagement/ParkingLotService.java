@@ -90,4 +90,5 @@ public class ParkingLotService {
 
         return (double) occupiedSpots / totalSpots;
     }
+    
 }

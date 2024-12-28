@@ -147,6 +147,20 @@ const handleViewLot = async (lotId) => {
     setEditingLot(lot);
     setIsFormOpen(true);
   };
+  const handleSpotStatusChange = (lotId, spotId, newStatus) => {
+    setLots((prevLots) =>
+      prevLots.map((lot) =>
+        lot.id === lotId
+          ? {
+              ...lot,
+              spots: lot.spots.map((spot) =>
+                spot.id === spotId ? { ...spot, status: newStatus } : spot
+              ),
+            }
+          : lot
+      )
+    );
+  };
   const handleUpdateLot = async (updatedLotData) => {
     try {
       const { latitude, longitude } = await geocodeLocation(
@@ -270,7 +284,12 @@ const handleViewLot = async (lotId) => {
                   ← Back to lots
                 </Typography>
               </Box>
-              <LotDetails lot={selectedLot} />
+              <LotDetails
+                lot={selectedLot}
+                onSpotStatusChange={(spotId, newStatus) =>
+                  handleSpotStatusChange(selectedLot.id, spotId, newStatus)
+                }
+              />
             </>
           ) : (
             <>

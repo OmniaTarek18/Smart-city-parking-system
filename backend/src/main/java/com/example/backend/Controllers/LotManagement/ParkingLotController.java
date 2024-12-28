@@ -48,4 +48,5 @@ public class ParkingLotController {
     public double getOccupancyRate(@PathVariable int parkingLotId) {
         return parkingLotService.getOccupancyRate(parkingLotId);
     }
+    
 }

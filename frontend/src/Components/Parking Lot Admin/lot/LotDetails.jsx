@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -11,10 +11,55 @@ import {
 import { PictureAsPdf } from "@mui/icons-material";
 import SpotCard from "../spot/SpotCard";
 import { updateParkingSpot } from "../../../api/parkingSpotsAPI";
+import { getOccupancyRate } from "../../../api/lotManagementAPI";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  PDFDownloadLink,
+} from "@react-pdf/renderer";
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 30,
+    fontFamily: "Helvetica",
+  },
+  section: {
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  subtitle: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  text: {
+    fontSize: 12,
+    marginBottom: 5,
+  },
+});
 
 const LotDetails = ({ lot, onSpotStatusChange, onSpotEdit, onSpotDelete }) => {
   const [showReport, setShowReport] = useState(false);
-  const [spots, setSpots] = useState(lot.spots); 
+  const [spots, setSpots] = useState(lot.spots);
+  const [occupancyRate, setOccupancyRate] = useState(null);
+
+  useEffect(() => {
+    const fetchOccupancyRate = async () => {
+      try {
+        const rate = await getOccupancyRate(lot.id);
+        setOccupancyRate(rate);
+      } catch (error) {
+        console.error("Failed to fetch occupancy rate", error);
+      }
+    };
+
+    fetchOccupancyRate();
+  }, [lot.id]);
 
   const handleSpotUpdate = async (spotId, updatedSpotData) => {
     try {
@@ -29,13 +74,41 @@ const LotDetails = ({ lot, onSpotStatusChange, onSpotEdit, onSpotDelete }) => {
         spot.id === spotId ? { ...spot, ...updatedSpotData } : spot
       );
 
-      setSpots(updatedSpots); 
-      onSpotStatusChange(updatedSpots); 
+      setSpots(updatedSpots);
+      onSpotStatusChange(updatedSpots);
     } catch (error) {
       console.error(error);
       alert("Failed to update parking spot. Please try again.");
     }
   };
+
+  const ParkingLotReport = () => (
+    <Document>
+      <Page style={styles.page}>
+        <View style={styles.section}>
+          <Text style={styles.title}>Parking Lot Report</Text>
+          <Text style={styles.subtitle}>Parking Lot: {lot.name}</Text>
+          <Text style={styles.text}>
+            Location: {lot.location.latitude}, {lot.location.longitude}
+          </Text>
+          <Text style={styles.text}>
+            Total Capacity:{" "}
+            {lot.capacity_ev + lot.capacity_regular + lot.capacity_handicap}
+          </Text>
+          <Text style={styles.text}>Occupancy Rate: {occupancyRate}%</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.subtitle}>Parking Spots:</Text>
+          {spots.map((spot) => (
+            <Text key={spot.id} style={styles.text}>
+              Spot {spot.id}: {spot.status} ({spot.type})
+            </Text>
+          ))}
+        </View>
+      </Page>
+    </Document>
+  );
 
   if (showReport) {
     return (
@@ -48,8 +121,31 @@ const LotDetails = ({ lot, onSpotStatusChange, onSpotEdit, onSpotDelete }) => {
           Back to Details
         </Button>
         <Typography variant="h6">
-          Report generation will be implemented here using Jasper.
+          Report generation has been completed. Below is the PDF preview.
         </Typography>
+
+        {occupancyRate !== null && (
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Occupancy Rate: {occupancyRate}%
+          </Typography>
+        )}
+
+        <Box sx={{ mt: 3 }}>
+          <PDFDownloadLink
+            document={<ParkingLotReport />}
+            fileName={`${lot.name}_parking_lot_report.pdf`}
+          >
+            {({ loading }) =>
+              loading ? (
+                <Button variant="contained" disabled>
+                  Generating Report...
+                </Button>
+              ) : (
+                <Button variant="contained">Download Report</Button>
+              )
+            }
+          </PDFDownloadLink>
+        </Box>
       </Box>
     );
   }
@@ -80,7 +176,7 @@ const LotDetails = ({ lot, onSpotStatusChange, onSpotEdit, onSpotDelete }) => {
           <Button
             variant="contained"
             startIcon={<PictureAsPdf />}
-            onClick={() => setShowReport(true)}
+            onClick={() => setShowReport(true)} 
           >
             Generate Report
           </Button>
