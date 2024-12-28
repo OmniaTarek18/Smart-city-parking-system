@@ -24,7 +24,7 @@ const GoogleMap = () => {
   const [liveLocation, setLiveLocation] = useState(null);
   const [accuracy, setAccuracy] = useState(null);
   const [destination, setDestination] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(10); // 15 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(900); // 15 minutes in seconds
   const [timerRunning, setTimerRunning] = useState(true);
   const [isDriverNear, setIsDriverNear] = useState(false); // To check if the driver has arrived
 
@@ -144,7 +144,7 @@ const GoogleMap = () => {
     }
   }, [isDriverNear]);
 
-  const percentage = (timeLeft / 10) * 100;
+  const percentage = (timeLeft / 900) * 100;
 
   return (
     <div>

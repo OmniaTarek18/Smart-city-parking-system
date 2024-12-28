@@ -12,6 +12,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import { useData } from "../../Context/DataContext";
+import { reservatoinAPI } from "./ReservatoinAPI";
+import { useUser } from "../../Context/UserContext";
 
 const StyledDialogTitle = styled(DialogTitle)(() => ({
   backgroundColor: "#1976d2", // Primary color
@@ -39,11 +42,21 @@ const CustomButton = styled(Button)(() => ({
   },
 }));
 
-const ReceiptPopup = ({ handleClose, open, lotId }) => {
+const ReceiptPopup = ({ handleClose, open, lotId, cost }) => {
+  const { data } = useData();
+  const {userId} = useUser();
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
+    const json = {
+      duration: data.duration,
+      startTime: data.startTime,
+      parkingLotId: lotId,
+      spotType: data.spotType,
+      price: cost,
+    };
+    await reservatoinAPI(json, userId);
     // Show a Snackbar indicating payment has been taken from Visa card
     setOpenSnackbar(true);
 
@@ -77,7 +90,10 @@ const ReceiptPopup = ({ handleClose, open, lotId }) => {
             </Typography>
           </ContentBox>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "red", mt: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", color: "red", mt: 2 }}
+          >
             Rules and Terms:
           </Typography>
           <Typography variant="body2" sx={{ mb: 1 }}>
@@ -90,12 +106,16 @@ const ReceiptPopup = ({ handleClose, open, lotId }) => {
             3. Violations of parking rules may result in fines.
           </Typography>
           <Typography variant="body2" sx={{ mb: 1 }}>
-            4. Ensure that the parking space is vacated within the booked duration.
+            4. Ensure that the parking space is vacated within the booked
+            duration.
           </Typography>
         </DialogContent>
         <DialogActions>
           <CustomButton onClick={handleBooking}>Confirm Payment</CustomButton>
-          <CustomButton onClick={handleClose} sx={{ backgroundColor: "#6C757D" }}>
+          <CustomButton
+            onClick={handleClose}
+            sx={{ backgroundColor: "#6C757D" }}
+          >
             Close
           </CustomButton>
         </DialogActions>
@@ -114,7 +134,8 @@ const ReceiptPopup = ({ handleClose, open, lotId }) => {
           severity="success"
           sx={{ width: "100%", backgroundColor: "#4caf50" }}
         >
-          Amount of $10.00 has been taken from your Visa card. Redirecting driver to Map...
+          Amount of $10.00 has been taken from your Visa card. Redirecting
+          driver to Map...
         </Alert>
       </Snackbar>
     </>

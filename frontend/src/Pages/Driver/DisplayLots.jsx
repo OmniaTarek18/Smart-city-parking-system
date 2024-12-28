@@ -11,8 +11,10 @@ const DisplayLots = () => {
   const [hasMore, setHasMore] = useState(true); // State to track if more data exists
   const [lotId, setLotId] = useState(null);
   const [open, setOpen] = useState(false);
-  const handleOpen = (id) => {
+  const [cost, setCost] = useState(null);
+  const handleOpen = (id, cost) => {
     setLotId(id);
+    setCost(cost);
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
@@ -45,7 +47,7 @@ const DisplayLots = () => {
 
   return (
     <Container className="mt-5">
-      <ReceiptPopup handleClose={handleClose} open={open} lotId={lotId}/>
+      <ReceiptPopup handleClose={handleClose} open={open} lotId={lotId} cost={cost}/>
       <h2 className="text-center mb-4">Available Parking Lots</h2>
       <div className="row">
         {parkingLots.map((lot) => (
@@ -77,7 +79,7 @@ const DisplayLots = () => {
                 color="primary"
                 className="w-100"
                 sx={{ borderRadius: "20px" }}
-                onClick={() => handleOpen(lot.parkingLotId)}
+                onClick={() => handleOpen(lot.parkingLotId, lot.cost)}
               >
                 Book Now
               </Button>

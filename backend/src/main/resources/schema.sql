@@ -110,7 +110,7 @@ ENGINE = InnoDB;
 -- Table `smartParking`.`Reservation`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `smartParking`.`Reservation` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `Driver_id` INT NOT NULL,
   `ParkingSpot_id` INT NOT NULL,
   `ParkingLot_id` INT NOT NULL,
