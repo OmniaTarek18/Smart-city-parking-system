@@ -45,7 +45,7 @@ ON SCHEDULE EVERY 1 MINUTE
 DO
 BEGIN
     INSERT INTO smartParking.Violation (Driver_id, penality_type, LotManager_id, date_violated)
-    SELECT r.Driver_id, r.LotManager_id, NOW()
+    SELECT r.Driver_id, 'NOSHOWUP', r.LotManager_id, NOW()
     FROM smartParking.Reservation r
     WHERE r.status = 'RESERVED' AND r.start_time < NOW();
 END //
