@@ -36,18 +36,13 @@ def simulate_multiple_devices(num_spots, parking_lot_id):
         threads.append(thread)
         thread.start()
 
-    # Keep all threads running
     for thread in threads:
         thread.join()
 
 if __name__ == "__main__":
-    # Number of parking spots to simulate
     NUM_SPOTS = 10
 
-    # Parking lot ID
     PARKING_LOT_ID = 1
 
     print("Starting IoT simulator...")
-
-    # Start the simulation
     simulate_multiple_devices(NUM_SPOTS, PARKING_LOT_ID)
