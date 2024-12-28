@@ -14,17 +14,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LocationRepository {
     private final JdbcTemplate jdbcTemplate;
+
     public Point findCoordinatesById(int lotId) {
         String sql = "SELECT ST_X(location) as latitude, ST_Y(location) as longitude FROM parkinglot WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[] { lotId }, this::mapPoint);
+        return jdbcTemplate.queryForObject(sql, this::mapPoint, lotId);
     }
 
     private Point mapPoint(ResultSet rs, int rowNum) throws SQLException {
-        String latitude = rs.getString("latitude");
-        String longitude = rs.getString("longitude");
-        double x = Double.parseDouble(latitude);
-        double y = Double.parseDouble(longitude);
-        return new Point(x, y);
+        // use getDouble directly ....
+        double latitude = rs.getDouble("latitude");
+        double longitude = rs.getDouble("longitude");
+        return new Point(latitude, longitude);
     }
 
 }

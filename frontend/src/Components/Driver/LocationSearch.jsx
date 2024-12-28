@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import {
@@ -13,30 +13,30 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import "./dataPicker.css";
+import { useData } from "../../Context/DataContext";
 const options = [
-  { value: "new york", label: "New York" },
-  { value: "los angeles", label: "Los Angeles" },
-  { value: "chicago", label: "Chicago" },
-  { value: "houston", label: "Houston" },
-  { value: "miami", label: "Miami" },
+  { value: [31.2156, 29.9553], label: "Alexandria" }, // Alexandria
+  { value: [31.2156, 29.9355], label: "Stanley" }, // Stanley, Alexandria
+  { value: [31.2343, 29.9708], label: "Raml Station" }, // Raml Station, Alexandria
+  { value: [31.2068, 29.9006], label: "Montaza" }, // Montaza, Alexandria
+  { value: [31.241, 29.9689], label: "Mansheya" }, // Mansheya, Alexandria
 ];
 
 const LocationSearch = () => {
+  const { data, setData } = useData();
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedType, setSelectedType] = useState("regular");
+  const [selectedType, setSelectedType] = useState("REGULAR");
   const [startTime, setStartTime] = useState(new Date());
   const [duration, setDuration] = useState({ hours: 0, minutes: 0 });
 
   const handleLocationChange = (selected) => {
     setSelectedOption(selected);
-    console.log(selected);
   };
 
   const handleSpotTypeChange = (event) => {
     setSelectedType(event.target.value);
-    console.log("Selected spot type:", event.target.value);
   };
 
   const handleStartTimeChange = (date) => {
@@ -49,13 +49,24 @@ const LocationSearch = () => {
   };
 
   const handleSubmit = () => {
-    console.log("Location:", selectedOption);
-    console.log("Spot Type:", selectedType);
-    console.log("Start Time:", startTime);
-    console.log("Duration:", duration);
+    setData({
+      locationCoor: {
+        latitude: selectedOption.value[0],
+        longitude: selectedOption.value[1],
+      },
+      spotType: selectedType,
+      startTime: startTime,
+      duration: `${String(duration.hours).padStart(2, "0")}:${String(
+        duration.minutes
+      ).padStart(2, "0")}:00`,
+    });
+    // console.log(data);
     navigate("/user-home-page/display-lots");
   };
 
+  useEffect(() => {
+    console.log("Data updated:", data);
+  }, [data]);
   const customDropdownIndicator = () => (
     <SearchIcon
       style={{
@@ -92,29 +103,44 @@ const LocationSearch = () => {
         }}
       />
 
-      <div style={{ marginBottom: "20px" }}>
-        <Typography variant="subtitle1">From:</Typography>
-        {/* <DatePicker
-          selected={startTime}
-          onChange={handleStartTimeChange}
-          showTimeSelect
-          dateFormat="Pp"
-          minDate={new Date()}
+      <div className="time-row-container">
+        <div
           className="custom-datepicker"
-          style={{ width: "100%", padding: "10px" }}
-        /> */}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            marginBottom: "20px",
+            width: "240px",
+          }}
+        >
+          <DatePicker
+            selected={startTime}
+            onChange={handleStartTimeChange}
+            showTimeSelect
+            dateFormat="Pp"
+            minDate={new Date()}
+            customInput={
+              <TextField
+                label="From"
+                variant="outlined"
+                fullWidth
+                sx={{ zIndex: 0 }}
+              />
+            }
+          />
+        </div>
+        <TextField
+          label="Duration (HH:MM)"
+          type="text"
+          name="duration"
+          value={`${String(duration.hours).padStart(2, "0")}:${String(
+            duration.minutes
+          ).padStart(2, "0")}`}
+          onChange={handleDurationChange}
+          sx={{ width: "240px", marginBottom: "20px", zIndex: 0 }}
+        />
       </div>
-
-      <TextField
-        label="Duration (HH:MM)"
-        type="time"
-        name="duration"
-        value={`${String(duration.hours).padStart(2, "0")}:${String(
-          duration.minutes
-        ).padStart(2, "0")}`}
-        onChange={handleDurationChange}
-        sx={{ width: "200px", marginBottom: "20px" }}
-      />
 
       <RadioGroup
         row
@@ -128,19 +154,19 @@ const LocationSearch = () => {
         }}
       >
         <FormControlLabel
-          value="regular"
+          value="REGULAR"
           control={<Radio />}
           label="Regular"
           sx={{ color: "black" }}
         />
         <FormControlLabel
-          value="disabled"
+          value="HANDICAP"
           control={<Radio />}
           label="Disabled"
           sx={{ color: "black" }}
         />
         <FormControlLabel
-          value="EVcharging"
+          value="EV"
           control={<Radio />}
           label="EV Charging"
           sx={{ color: "black" }}

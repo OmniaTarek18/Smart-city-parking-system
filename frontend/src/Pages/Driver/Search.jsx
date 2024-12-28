@@ -1,5 +1,6 @@
 import LocationSearch from "../../Components/Driver/LocationSearch";
 import "./search.css";
+import { useEffect } from "react";
 function Search() {
   return (
     <div className="search-page d-flex justify-content-center align-center">
