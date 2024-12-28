@@ -16,6 +16,7 @@ import Insights from "./Pages/System Admin/Insights";
 import { UserProvider } from "./Context/UserContext";
 import GoogleMap from "./Components/GoogleMap";
 import { DataProvider } from "./Context/DataContext";
+import ReceiptPopup from "./Pages/Driver/ReceiptPopup";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="search" element={<Search />} />
             <Route path="display-lots" element={<DisplayLots />} />
+            <Route path="route-to-lot/:lotId" element={<GoogleMap/>} />
           </Route>
 
           <Route path="/lot-admin-home-page" element={<LotAdminHomePage />}>

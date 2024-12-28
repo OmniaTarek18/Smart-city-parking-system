@@ -9,6 +9,7 @@
     "@mui/material": "^6.3.0",
     "@mui/private-theming": "^6.3.0",
     "@mui/styled-engine-sc": "^6.2.0",
+    "@mui/system": "^6.3.0",
     "@mui/x-date-pickers": "^7.23.3",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",

@@ -13,18 +13,43 @@ import { Icon } from "leaflet";
 import mapMarker from "../../assets/marker.png";
 import { lotLocationAPI } from "./api";
 import decodePolyline from "decode-google-map-polyline";
+import { useParams, useNavigate } from "react-router-dom";
+import { LinearProgress, Box, Typography } from "@mui/material";
 
-const GoogleMap = ({ lotId }) => {
+const GoogleMap = () => {
+  const { lotId } = useParams();
   const mapRef = React.useRef();
+  const navigate = useNavigate();
   const [route, setRoute] = useState([]);
   const [liveLocation, setLiveLocation] = useState(null);
   const [accuracy, setAccuracy] = useState(null);
-  const [destination, setDestination] = useState(null); // Set destination as null initially
+  const [destination, setDestination] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(10); // 15 minutes in seconds
+  const [timerRunning, setTimerRunning] = useState(true);
+  const [isDriverNear, setIsDriverNear] = useState(false); // To check if the driver has arrived
 
   const icon = new Icon({
     iconUrl: mapMarker,
     iconSize: [38, 38],
   });
+
+  const calculateDistance = (loc1, loc2) => {
+    const toRad = (value) => (value * Math.PI) / 180;
+    const R = 6371e3; // Earth's radius in meters
+    const lat1 = toRad(loc1[0]);
+    const lat2 = toRad(loc2[0]);
+    const deltaLat = toRad(loc2[0] - loc1[0]);
+    const deltaLon = toRad(loc2[1] - loc1[1]);
+
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1) *
+        Math.cos(lat2) *
+        Math.sin(deltaLon / 2) *
+        Math.sin(deltaLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in meters
+  };
 
   const fetchRoute = async (origin) => {
     if (!origin || !destination) return;
@@ -33,8 +58,8 @@ const GoogleMap = ({ lotId }) => {
       method: "GET",
       url: "https://google-map-places.p.rapidapi.com/maps/api/directions/json",
       params: {
-        origin: `${origin[0]},${origin[1]}`, // Current location (driver's location)
-        destination: `${destination[0]},${destination[1]}`, // Parking lot location
+        origin: `${origin[0]},${origin[1]}`,
+        destination: `${destination[0]},${destination[1]}`,
         mode: "driving",
         language: "en",
         alternatives: "true",
@@ -42,19 +67,16 @@ const GoogleMap = ({ lotId }) => {
         avoid: "ferries|tolls|highways",
       },
       headers: {
-        // uncomment the following lines to use the API
-        // "x-rapidapi-key": "cb20e416d3msha4c774e94db4ed3p138ebfjsn3b0d73722384",
+        // Uncomment the following lines to use the API
+        // "x-rapidapi-key": "your-api-key",
         // "x-rapidapi-host": "google-map-places.p.rapidapi.com",
       },
     };
 
     try {
       const response = await axios.request(options);
-      console.log(response.data);
-
       const encodedPolyline = response.data.routes[0].overview_polyline.points;
       const decodedRoute = decodePolyline(encodedPolyline);
-
       setRoute(decodedRoute);
     } catch (error) {
       console.error("Error fetching route data:", error);
@@ -79,6 +101,17 @@ const GoogleMap = ({ lotId }) => {
     navigator.geolocation.watchPosition(success, error, options);
   };
 
+  const startTimer = () => {
+    if (timerRunning && timeLeft > 0) {
+      setTimeout(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      alert("No show up. Redirecting to home...");
+      navigate("/user-home-page/search");
+    }
+  };
+
   useEffect(() => {
     const getDestination = async () => {
       const location = await lotLocationAPI(lotId);
@@ -91,17 +124,64 @@ const GoogleMap = ({ lotId }) => {
   useEffect(() => {
     if (liveLocation && destination) {
       fetchRoute(liveLocation);
+
+      // Check if the driver is near the destination
+      const distance = calculateDistance(liveLocation, destination);
+      if (distance <= 50) {
+        setIsDriverNear(true);
+      }
     }
   }, [liveLocation, destination]);
 
+  useEffect(() => {
+    startTimer();
+  }, [timeLeft, timerRunning]);
+
+  useEffect(() => {
+    if (isDriverNear) {
+      alert("You have reached the destination. Remaining amount has been taken.");
+      navigate("/user-home-page/search"); // Redirect to home page
+    }
+  }, [isDriverNear]);
+
+  const percentage = (timeLeft / 10) * 100;
+
   return (
     <div>
-      <h1>Live Directions Map</h1>
+      {/* Timer Bar */}
+      <Box sx={{ width: "100%", zIndex: 10 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: "center",
+            backgroundColor: "#1976d2",
+            height: "3rem",
+            padding: "1rem",
+            color: "white",
+          }}
+        >
+          Time Remaining: {Math.floor(timeLeft / 60)}:
+          {timeLeft % 60 < 10 ? "0" : ""}
+          {timeLeft % 60}
+        </Typography>
+        <LinearProgress
+          variant="determinate"
+          value={percentage}
+          sx={{
+            height: 10,
+            backgroundColor: "#ddd",
+            "& .MuiLinearProgress-bar": {
+              backgroundColor: "#1976d2",
+            },
+          }}
+        />
+      </Box>
+
       {destination && (
         <MapContainer
           center={destination}
           zoom={15}
-          style={{ height: "80vh", width: "70%", margin: "auto" }}
+          style={{ height: "85vh", width: "100%" }}
           whenCreated={(mapInstance) => {
             mapRef.current = mapInstance;
           }}
@@ -128,7 +208,7 @@ const GoogleMap = ({ lotId }) => {
               <Popup>Parking Lot Location</Popup>
             </Marker>
           )}
-          {route.length > 0 && <Polyline positions={route} color="#4C585B" />}
+          {route.length > 0 && <Polyline positions={route} color="black" />}
         </MapContainer>
       )}
     </div>
@@ -136,3 +216,4 @@ const GoogleMap = ({ lotId }) => {
 };
 
 export default GoogleMap;
+
