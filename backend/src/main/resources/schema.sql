@@ -181,9 +181,10 @@ CREATE TABLE IF NOT EXISTS `smartParking`.`PricingStrategy` (
   CONSTRAINT `fk_PricingStrategy_ParkingLot1`
     FOREIGN KEY (`ParkingLot_id`)
     REFERENCES `smartParking`.`ParkingLot` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE  
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
 
 
 -- -----------------------------------------------------

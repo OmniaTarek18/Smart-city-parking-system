@@ -36,10 +36,11 @@ export const validateLotForm = (formData) => {
       }
     } else if (capacity === 0) {
       // if capacity is 0 baseRate and congestionRate can be 0 as well
-      if (pricing?.baseRate !== 0) {
+      if (!(typeof pricing?.baseRate === "undefined") && pricing?.baseRate !== 0) {
         errors[`${type}.baseRate`] = `${type.charAt(0).toUpperCase() + type.slice(1)} base rate must be 0 if the capacity is 0`;
       }
-      if (pricing?.congestionRate !== 0) {
+      if (!(typeof pricing?.congestionRate === "undefined")&& pricing?.congestionRate !== 0) {
+        console.log(pricing.congestionRate)
         errors[`${type}.congestionRate`] = `${type.charAt(0).toUpperCase() + type.slice(1)} congestion rate must be 0 if the capacity is 0`;
       }
     }

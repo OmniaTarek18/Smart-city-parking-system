@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/pricing-strategy")
+@RestController
+@RequestMapping("/pricing-strategy")
 public class PricingStrategyController {
 
     private final PricingStrategyService pricingStrategyService;

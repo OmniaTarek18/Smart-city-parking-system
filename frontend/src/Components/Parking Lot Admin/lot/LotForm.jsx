@@ -100,36 +100,37 @@ const LotForm = ({ open, onClose, onSubmit, editingLot }) => {
     setTouched((prev) => ({ ...prev, [parentField]: true }));
   };
 
-  const handleSubmit = () => {
-    const validationErrors = validateLotForm(formData);
-    if (Object.keys(validationErrors).length === 0) {
-      onSubmit(formData); // pass to parent
-      setFormData({
-        name: "",
-        location: "",
-        capacity: { regular: 0, disabled: 0, evCharging: 0 },
-        pricing: {
-          regular: { baseRate: 0, congestionRate: 0 },
-          disabled: { baseRate: 0, congestionRate: 0 },
-          evCharging: { baseRate: 0, congestionRate: 0 },
-        },
-      });
-      setErrors({});
-      setTouched({});
-      onClose();
-    } else {
-      setErrors(validationErrors);
-      setTouched(
-        Object.keys(validationErrors).reduce(
-          (acc, key) => ({
-            ...acc,
-            [key]: true,
-          }),
-          {}
-        )
-      );
-    }
-  };
+const handleSubmit = () => {
+  const validationErrors = validateLotForm(formData);
+  if (Object.keys(validationErrors).length === 0) {
+    console.log(formData); 
+    onSubmit(formData); // pass to parent
+    setFormData({
+      name: "",
+      location: "",
+      capacity: { regular: 0, disabled: 0, evCharging: 0 },
+      pricing: {
+        regular: { baseRate: 0, congestionRate: 0 },
+        disabled: { baseRate: 0, congestionRate: 0 },
+        evCharging: { baseRate: 0, congestionRate: 0 },
+      },
+    });
+    setErrors({});
+    setTouched({});
+    onClose();
+  } else {
+    setErrors(validationErrors);
+    setTouched(
+      Object.keys(validationErrors).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: true,
+        }),
+        {}
+      )
+    );
+  }
+};
 
   const hasError = (field) => touched[field] && errors[field];
 
