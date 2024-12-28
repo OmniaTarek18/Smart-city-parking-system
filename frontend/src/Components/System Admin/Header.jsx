@@ -6,7 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 
 
-const pages = ["View Insights","Manage Lot Managers", "Manage Drivers", "Manage Admins"];
+const pages = ["View Insights", "Manage Lot Managers", "Manage Drivers", "Manage Admins"];
 const settings = ["Logout"];
 // const notifications = ["penality here 5$"];
 
@@ -17,10 +17,19 @@ function Header() {
   const [anchorElNo, setAnchorElNo] = useState(null);
   const [notifications, setNotifications] = useState(null);
 
-  const handleOpenNoMenu= (event) => setAnchorElNo(event.currentTarget);
+  const handleOpenNoMenu = (event) => setAnchorElNo(event.currentTarget);
   const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
   const handleCloseNoMenu = () => setAnchorElNo(null);
   const handleCloseUserMenu = () => setAnchorElUser(null);
+
+  const handleLogout = () => {
+    // Clear user authentication data (e.g., remove tokens from localStorage)
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+
+    // Redirect to registeration page
+    navigate("/");
+  };
 
   const getPagePath = (page) => `/system-admin-home-page/${page.toLowerCase().replace(" ", "-")}`;
 
@@ -53,7 +62,8 @@ function Header() {
             {pages.map((page) => (
               <Button
                 key={page}
-                sx={{ my: 2,
+                sx={{
+                  my: 2,
                   backgroundColor: location.pathname === getPagePath(page) ? "#585858" : "#333333",
                   color: "white",
                   '&:hover': {
@@ -106,7 +116,7 @@ function Header() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={setting === "Logout" ? handleLogout : handleCloseUserMenu}>
                   <Typography>{setting}</Typography>
                 </MenuItem>
               ))}
