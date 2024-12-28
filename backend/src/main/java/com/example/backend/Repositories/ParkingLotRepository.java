@@ -32,13 +32,13 @@ public class ParkingLotRepository {
                 "LIMIT ? OFFSET ?;";
 
         return jdbc.query(query, (rs, rowNum) -> {
-            return new TopLotDTO(
-                rs.getString("name"),
-                rs.getInt("occupancy_rate"),
-                rs.getInt("total_revenue"),
-                rs.getInt("violations"),
-                rs.getInt("score")
-            );
+            TopLotDTO lotDTO = new TopLotDTO();
+            lotDTO.setLotName(rs.getString("name"));
+            lotDTO.setOccupancyRate(rs.getInt("occupancy_rate"));
+            lotDTO.setTotalRevenue(rs.getInt("total_revenue"));
+            lotDTO.setViolations(rs.getInt("violations"));
+            lotDTO.setScore(rs.getInt("score"));
+            return lotDTO;
         }, pageSize, (pageNum-1) * pageSize);
     }
 }

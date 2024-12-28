@@ -1,11 +1,16 @@
 package com.example.backend.DTOs;
 
-public record TopUserDTO(
-        String firstName,
-        String lastName,
-        int totalRevenue,
-        int violations,
-        int score
-)  {
-    
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class TopUserDTO  {
+        private String firstName;
+        private String lastName;
+        private int totalRevenue;
+        private int violations;
+        private int score;
 }

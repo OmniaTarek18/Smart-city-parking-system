@@ -24,7 +24,7 @@ INSERT IGNORE INTO `smartParking`.`ParkingSpot` (`id`, `ParkingLot_id`, `type`, 
 
 -- Insert data into `Reservation` table
 INSERT IGNORE INTO `smartParking`.`Reservation` (`id`, `Driver_id`, `ParkingSpot_id`, `ParkingLot_id`, `duration`, `start_time`, `status`, `price`) VALUES
-(1, 1, 1, 1, '01:30:00', '2024-12-27 08:00:00', 'ACTIVE', 10.00);
+(1, 1, 1, 1, '01:30:00', '2024-12-28 08:00:00', 'ACTIVE', 10.00);
 
 -- Insert data into `ReservationRules` table
 INSERT IGNORE INTO `smartParking`.`ReservationRules` (`LotManager_id`, `time_limit`) VALUES
