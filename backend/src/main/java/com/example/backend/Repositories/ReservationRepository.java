@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.DTOs.ReservationDTO;
 import com.example.backend.Enums.ReservationStatus;
@@ -21,6 +22,7 @@ import java.sql.Time;
 public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
 
+    @Transactional
     public Integer findAvailableSpot(int parkingLotId, SpotType spotType) {
         String sql = """
                 SELECT id
@@ -37,6 +39,7 @@ public class ReservationRepository {
         }, parkingLotId, spotType.toString());
     }
 
+    @Transactional
     public int createReservation(int userId, ReservationDTO body) {
         Integer spotId = findAvailableSpot(body.parkingLotId(), body.spotType());
 
@@ -73,16 +76,19 @@ public class ReservationRepository {
         }
     }
 
+    @Transactional
     private void markSpotAsReserved(int spotId) {
         String sql = "UPDATE parkingspot SET status = 'RESERVED' WHERE id = ?";
         jdbcTemplate.update(sql, spotId);
     }
 
+    @Transactional
     private void markSpotAsOccupied(int spotId) {
         String sql = "UPDATE parkingspot SET status = 'RESERVED' WHERE id = ?";
         jdbcTemplate.update(sql, spotId);
     }
 
+    @Transactional
     private void markSpotAsAvailable(int spotId) {
         String sql = "UPDATE parkingspot SET status = 'RESERVED' WHERE id = ?";
         jdbcTemplate.update(sql, spotId);
